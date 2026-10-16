@@ -1,0 +1,90 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, disciplines, process, work, experience } from '../data/site.js';
+const resume = site.resumeUrl ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${site.resumeUrl}` : '';
+---
+<Base>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="#top">{site.name}</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#resume">Resume</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+  </div>
+
+  <main id="main">
+    <div class="wrap hero" id="top">
+      <h1>I design it, <span>build it</span>, and write it.</h1>
+      <p class="lead">{site.intro}</p>
+      <div class="btns">
+        <a class="btn primary" href="#work">See selected work</a>
+        <a class="btn" href={`mailto:${site.email}`}>Email me</a>
+      </div>
+    </div>
+
+    <section id="skills"><div class="wrap">
+      <h2>Three skills, one workflow</h2>
+      <p class="sub">{site.title}.</p>
+      {disciplines.map((d) => (
+        <article class="disc" id={d.id}>
+          <div><h3>{d.name}</h3><p>{d.summary}</p></div>
+          <ul>{d.skills.map((s) => <li>{s}</li>)}</ul>
+        </article>
+      ))}
+    </div></section>
+
+    <section id="process"><div class="wrap">
+      <h2>How I work</h2>
+      <p class="sub">The same five steps apply whether the project is a redesign, a build, or a content overhaul.</p>
+      <ol class="steps">
+        {process.map((p) => <li><strong>{p.step}</strong><span>{p.text}</span></li>)}
+      </ol>
+    </div></section>
+
+    <section id="work"><div class="wrap">
+      <h2>Selected work</h2>
+      <p class="sub">Each project shows the problem, my part in it, and the result.</p>
+      {work.map((w) => (
+        <article class="case">
+          <div>
+            <h3>{w.href ? <a href={w.href}>{w.title}</a> : w.title}</h3>
+            <p class="tags">{w.roles.join(', ')}</p>
+          </div>
+          <dl>
+            <dt>Problem</dt><dd>{w.problem}</dd>
+            <dt>My role</dt><dd>{w.role}</dd>
+            <dt>Result</dt><dd>{w.outcome}</dd>
+          </dl>
+        </article>
+      ))}
+    </div></section>
+
+    <section id="resume"><div class="wrap">
+      <h2>Resume</h2>
+      <ul class="xp">
+        {experience.map((e) => (
+          <li><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
+        ))}
+      </ul>
+      {resume && <p><a class="btn" href={resume}>Download resume (PDF)</a></p>}
+    </div></section>
+
+    <section id="contact" class="contact"><div class="wrap">
+      <h2>Let's talk about your project</h2>
+      <p class="sub">Tell me what you are building and where it is stuck. I reply within a few working days.</p>
+      <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>
+      <ul class="links">
+        {site.links.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}
+      </ul>
+    </div></section>
+  </main>
+
+  <footer><div class="wrap">© {new Date().getFullYear()} {site.name}</div></footer>
+</Base>
