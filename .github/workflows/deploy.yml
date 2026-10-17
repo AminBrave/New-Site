@@ -17,7 +17,7 @@ jobs:
       ASTRO_SITE: https://${{ github.repository_owner }}.github.io
       ASTRO_BASE: /${{ github.event.repository.name }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v5
         with:
           node-version: 22
