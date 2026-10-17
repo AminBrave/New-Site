@@ -17,5 +17,5 @@ const initials = label
 ---
 <span class={`logo-tile ${size}`} style={`--c:${w.color}`}>
   <span class="mono" aria-hidden="true">{initials}</span>
-  {w.logo && <img src={src(w.logo)} alt="" loading="lazy" onerror="this.remove()" />}
+  {w.logo && <img src={src(w.logo)} alt="" loading="lazy" decoding="async" onerror="this.remove()" />}
 </span>

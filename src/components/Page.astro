@@ -9,9 +9,10 @@ import type { DisciplineId, Lang, SectionId } from '../data/types';
 
 interface Props {
   lang: Lang;
+  preload?: string[];
 }
 
-const { lang } = Astro.props;
+const { lang, preload } = Astro.props;
 const t = content[lang];
 const root = import.meta.env.BASE_URL.replace(/\/$/, '');
 const urls: Record<Lang, string> = { en: `${root}/`, fa: `${root}/fa/` };
@@ -33,7 +34,7 @@ const roleClasses = ['r-ux', 'r-woo', 'r-content'];
 const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 ---
-<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls} name={t.name} jobTitle={t.title}>
+<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls} name={t.name} jobTitle={t.title} preload={preload}>
   <a class="skip" href="#main">{t.ui.skip}</a>
   <div class="progress" aria-hidden="true"></div>
 
@@ -246,7 +247,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
         <div class="dlg-grid">
           <aside class="dlg-side">
             <dl class="facts">
-              <div><dt><Icon name="tools" size={16} />{t.ui.toolkit}</dt><dd><ul class="chips sm">{d.detail.tools.map((x) => <li>{x}</li>)}</ul></dd></div>
+              <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.toolkit}</dt><dd><ul class="chips sm">{d.detail.tools.map((x) => <li>{x}</li>)}</ul></dd></div>
             </dl>
             {d.detail.related.length > 0 && (
               <div class="rel">
@@ -284,7 +285,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
       </div>
       <div class="cover" aria-hidden="true">
         <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`g-${w.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#g-${w.id})`}/></svg>
-        {w.cover && <img src={src(w.cover)} alt="" loading="lazy" onerror="this.remove()" />}
+        {w.cover && <img src={src(w.cover)} alt="" loading="lazy" decoding="async" onerror="this.remove()" />}
       </div>
       <div class="dlg-body">
         <header class="dlg-head">
@@ -299,7 +300,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
               <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
               <div><dt><Icon name="clock" size={16} />{t.ui.duration}</dt><dd>{w.duration}</dd></div>
               <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
-              {w.tools?.length > 0 && <div><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
+              {w.tools?.length > 0 && <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
             </dl>
             {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
           </aside>
@@ -317,7 +318,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
             <section class="blk"><h3><span class="tile sm"><Icon name="image" size={18} /></span>{t.ui.gallery}</h3>
               <ul class="gallery">
                 {w.gallery?.length > 0
-                  ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" /></li>)
+                  ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" decoding="async" /></li>)
                   : [1, 2, 3].map(() => <li class="ph" aria-hidden="true"><Icon name="image" size={28} /><span>{t.ui.shot}</span></li>)}
               </ul></section>
             {w.testimonial && <figure class="quote"><Icon name="quote" size={28} /><blockquote>{w.testimonial.quote}</blockquote><figcaption><b>{w.testimonial.author}</b> · {w.testimonial.title}</figcaption></figure>}
@@ -331,22 +332,30 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
 </Base>
 
 <script>
-  /* ---------- tiny typed DOM helpers ---------- */
+  /* ---------- helpers ---------- */
   function $<T extends HTMLElement = HTMLElement>(selector: string, scope: ParentNode = document): T | null {
     return scope.querySelector<T>(selector);
   }
   function $$<T extends HTMLElement = HTMLElement>(selector: string, scope: ParentNode = document): T[] {
     return Array.from(scope.querySelectorAll<T>(selector));
   }
+  /** Runs one feature in isolation so a failure in one never breaks the others. */
+  function run(name: string, init: () => void): void {
+    try {
+      init();
+    } catch (error) {
+      console.warn(`[portfolio] ${name} failed`, error);
+    }
+  }
   const getDialog = (id: string): HTMLDialogElement | null => {
     const el = document.getElementById(id);
-    return el instanceof HTMLDialogElement ? el : null;
+    return el && el.localName === 'dialog' ? (el as HTMLDialogElement) : null;
   };
 
   const root = document.documentElement;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasObserver = 'IntersectionObserver' in window;
 
-  /* ---------- scroll progress, header state, section activation ---------- */
   const bar = $('.bar');
   const progress = $('.progress');
   const hero = $('#top');
@@ -356,6 +365,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
   const steps = $('[data-steps]');
   const stepItems = steps ? $$('li', steps) : [];
 
+  /* ---------- active section, scroll progress, step bar ---------- */
   function activate(id: string): void {
     const href = `#${id}`;
     for (const link of [...dots, ...menuLinks]) {
@@ -365,13 +375,24 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
     for (const section of sections) section.classList.toggle('is-active', section.id === id);
   }
 
+  let stepsNear = !hasObserver;
   function updateStepProgress(): void {
-    if (!steps) return;
+    if (!steps || !stepsNear) return; // skip layout reads while the steps are far off-screen
     const rect = steps.getBoundingClientRect();
     const vh = window.innerHeight;
     const p = Math.min(1, Math.max(0, (vh * 0.82 - rect.top) / (rect.height + vh * 0.3)));
     steps.style.setProperty('--p', p.toFixed(3));
     stepItems.forEach((item, i) => item.classList.toggle('done', p > 0.02 && p * 4 >= i - 0.001));
+  }
+
+  /** Fallback for browsers without IntersectionObserver. */
+  function activateFromScroll(): void {
+    const middle = window.innerHeight / 2;
+    const hit = sections.find((s) => {
+      const r = s.getBoundingClientRect();
+      return r.top <= middle && r.bottom > middle;
+    });
+    if (hit) activate(hit.id);
   }
 
   let scrollQueued = false;
@@ -383,52 +404,109 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
       const max = root.scrollHeight - window.innerHeight;
       progress?.style.setProperty('--p', String(max > 0 ? Math.min(y / max, 1) : 0));
       bar?.classList.toggle('scrolled', y > 8);
-      const last = sections.at(-1);
+      if (!hasObserver) activateFromScroll();
+      const last = sections[sections.length - 1];
       if (last && max > 0 && max - y < 4) activate(last.id);
       updateStepProgress();
       scrollQueued = false;
     });
   }
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll);
-  onScroll();
 
-  const sectionObserver = new IntersectionObserver(
-    (entries) => entries.forEach((entry) => entry.isIntersecting && activate(entry.target.id)),
-    { rootMargin: '-45% 0px -50% 0px' },
-  );
-  sections.forEach((section) => sectionObserver.observe(section));
+  run('scroll', () => {
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    onScroll();
+  });
+
+  run('sections', () => {
+    if (!hasObserver) return;
+    const sectionObserver = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && activate(entry.target.id)),
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((section) => sectionObserver.observe(section));
+    if (steps) {
+      new IntersectionObserver(
+        (entries) => {
+          stepsNear = entries.some((entry) => entry.isIntersecting);
+          if (stepsNear) onScroll();
+        },
+        { rootMargin: '25% 0px' },
+      ).observe(steps);
+    }
+  });
 
   /* ---------- dot labels: also show on tap (touch has no hover) ---------- */
-  const tipTimers = new WeakMap<HTMLElement, number>();
-  function showTip(link: HTMLElement): void {
-    link.classList.add('tip');
-    window.clearTimeout(tipTimers.get(link));
-    tipTimers.set(link, window.setTimeout(() => link.classList.remove('tip'), 2200));
-  }
-  dots.forEach((link) => {
-    link.addEventListener('pointerdown', (event) => event.pointerType !== 'mouse' && showTip(link));
-    link.addEventListener('click', () => showTip(link));
+  run('dots', () => {
+    const timers = new WeakMap<HTMLElement, number>();
+    const showTip = (link: HTMLElement): void => {
+      link.classList.add('tip');
+      window.clearTimeout(timers.get(link));
+      timers.set(link, window.setTimeout(() => link.classList.remove('tip'), 2200));
+    };
+    dots.forEach((link) => {
+      link.addEventListener('pointerdown', (event) => event.pointerType !== 'mouse' && showTip(link));
+      link.addEventListener('click', () => showTip(link));
+    });
   });
 
   /* ---------- repeating reveal animations ---------- */
-  const revealObserver = new IntersectionObserver(
-    (entries) => entries.forEach((entry) => entry.target.classList.toggle('in', entry.isIntersecting)),
-    { rootMargin: '0px 0px -8% 0px' },
-  );
-  $$('[data-reveal], [data-stagger]').forEach((el) => revealObserver.observe(el));
-  if (hero) {
-    new IntersectionObserver(
-      (entries) => entries.forEach((entry) => hero.classList.toggle('run', entry.isIntersecting)),
-      { threshold: 0 },
-    ).observe(hero);
-  }
+  run('reveal', () => {
+    if (!hasObserver) return;
+    const revealObserver = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.target.classList.toggle('in', entry.isIntersecting)),
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    $$('[data-reveal], [data-stagger]').forEach((el) => revealObserver.observe(el));
+    if (hero) {
+      new IntersectionObserver(
+        (entries) => entries.forEach((entry) => hero.classList.toggle('run', entry.isIntersecting)),
+        { threshold: 0 },
+      ).observe(hero);
+    }
+  });
 
-  /* ---------- modal manager (history entry so the Back button closes a modal) ---------- */
+  /* ---------- modals: native <dialog>, with a fallback for browsers without showModal ---------- */
   interface ModalState { modal: string }
+  const supportsDialog = typeof HTMLDialogElement === 'function' && typeof HTMLDialogElement.prototype.showModal === 'function';
   let openDialog: HTMLDialogElement | null = null;
+  let legacyBackdrop: HTMLDivElement | null = null;
+  let legacyReturnFocus: HTMLElement | null = null;
   const menuButtons = $$('[data-open="menu"]');
   const setMenuExpanded = (open: boolean): void => menuButtons.forEach((b) => b.setAttribute('aria-expanded', String(open)));
+
+  function showDialog(dialog: HTMLDialogElement): void {
+    root.classList.add('modal-open');
+    if (supportsDialog) {
+      dialog.showModal();
+      return;
+    }
+    legacyReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    if (!legacyBackdrop) {
+      legacyBackdrop = document.createElement('div');
+      legacyBackdrop.className = 'legacy-backdrop';
+      legacyBackdrop.addEventListener('click', () => openDialog && hideDialog(openDialog));
+      document.body.appendChild(legacyBackdrop);
+    }
+    legacyBackdrop.hidden = false;
+    dialog.classList.add('legacy');
+    dialog.setAttribute('open', '');
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    $('[data-close]', dialog)?.focus();
+  }
+
+  function hideDialog(dialog: HTMLDialogElement): void {
+    if (supportsDialog) {
+      dialog.close();
+      return;
+    }
+    dialog.removeAttribute('open');
+    dialog.classList.remove('legacy');
+    if (legacyBackdrop) legacyBackdrop.hidden = true;
+    legacyReturnFocus?.focus();
+    dialog.dispatchEvent(new Event('close'));
+  }
 
   function openModal(id: string): void {
     const dialog = getDialog(id);
@@ -437,10 +515,10 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
     if (openDialog && openDialog !== dialog) {
       const previous = openDialog;
       openDialog = null;
-      previous.close();
+      hideDialog(previous);
       replace = true;
     }
-    dialog.showModal();
+    showDialog(dialog);
     dialog.scrollTop = 0;
     openDialog = dialog;
     if (id === 'menu') {
@@ -455,99 +533,148 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
 
   function closeSilently(dialog: HTMLDialogElement): void {
     if (openDialog === dialog) openDialog = null;
-    dialog.close();
+    root.classList.remove('modal-open');
+    hideDialog(dialog);
   }
 
-  $$('[data-open]').forEach((button) =>
-    button.addEventListener('click', () => {
-      const id = button.dataset.open;
-      if (id) openModal(id);
-    }),
-  );
-
-  $$<HTMLDialogElement>('dialog').forEach((dialog) => {
-    $('[data-close]', dialog)?.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) dialog.close();
-    });
-    dialog.addEventListener('close', () => {
-      if (dialog.id === 'menu') setMenuExpanded(false);
-      if (openDialog !== dialog) return;
-      openDialog = null;
-      const state = history.state as Partial<ModalState> | null;
-      if (state?.modal) history.back();
-    });
-  });
-  addEventListener('popstate', () => {
-    if (!openDialog) return;
-    const dialog = openDialog;
-    openDialog = null;
-    dialog.close();
-  });
-
-  // menu links: close the menu, scroll to the section, move focus there
-  const menuDialog = getDialog('menu');
-  $$<HTMLAnchorElement>('[data-nav]').forEach((link) =>
-    link.addEventListener('click', (event) => {
-      const hash = link.getAttribute('href');
-      const target = hash ? $(hash) : null;
-      if (!hash || !target) return;
-      event.preventDefault();
-      if (menuDialog) closeSilently(menuDialog);
-      history.replaceState(null, '', hash);
-      requestAnimationFrame(() => {
-        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-        target.focus({ preventScroll: true });
+  run('modals', () => {
+    $$('[data-open]').forEach((button) =>
+      button.addEventListener('click', () => {
+        const id = button.dataset.open;
+        if (id) openModal(id);
+      }),
+    );
+    $$<HTMLDialogElement>('dialog').forEach((dialog) => {
+      $('[data-close]', dialog)?.addEventListener('click', () => hideDialog(dialog));
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) hideDialog(dialog);
       });
-    }),
-  );
+      dialog.addEventListener('close', () => {
+        if (dialog.id === 'menu') setMenuExpanded(false);
+        root.classList.toggle('modal-open', openDialog !== null && openDialog !== dialog);
+        if (openDialog !== dialog) return;
+        openDialog = null;
+        const state = history.state as Partial<ModalState> | null;
+        if (state?.modal) history.back();
+      });
+    });
+    addEventListener('popstate', () => {
+      if (!openDialog) return;
+      const dialog = openDialog;
+      openDialog = null;
+      hideDialog(dialog);
+    });
+    if (!supportsDialog) {
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && openDialog) hideDialog(openDialog);
+      });
+    }
+
+    // menu links: close the menu, scroll to the section, move focus there
+    const menuDialog = getDialog('menu');
+    $$<HTMLAnchorElement>('[data-nav]').forEach((link) =>
+      link.addEventListener('click', (event) => {
+        const hash = link.getAttribute('href');
+        const target = hash ? $(hash) : null;
+        if (!hash || !target) return;
+        event.preventDefault();
+        if (menuDialog) closeSilently(menuDialog);
+        history.replaceState(null, '', hash);
+        requestAnimationFrame(() => {
+          target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+          target.focus({ preventScroll: true });
+        });
+      }),
+    );
+  });
 
   /* ---------- theme switch ---------- */
-  const themeSwitch = $('[data-theme-toggle]');
-  const readStoredTheme = (): string | null => {
-    try { return localStorage.getItem('theme'); } catch { return null; }
-  };
-  const syncSwitch = (): void => themeSwitch?.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
-  syncSwitch();
-  themeSwitch?.addEventListener('click', () => {
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch { /* storage unavailable */ }
+  run('theme', () => {
+    const themeSwitch = $('[data-theme-toggle]');
+    const syncSwitch = (): void => themeSwitch?.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
     syncSwitch();
-  });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-    if (readStoredTheme()) return;
-    root.dataset.theme = event.matches ? 'dark' : 'light';
-    syncSwitch();
+    themeSwitch?.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch { /* storage unavailable */ }
+      syncSwitch();
+    });
+    const scheme = matchMedia('(prefers-color-scheme: dark)');
+    if (typeof scheme.addEventListener === 'function') {
+      scheme.addEventListener('change', (event) => {
+        let stored: string | null = null;
+        try { stored = localStorage.getItem('theme'); } catch { /* storage unavailable */ }
+        if (stored) return;
+        root.dataset.theme = event.matches ? 'dark' : 'light';
+        syncSwitch();
+      });
+    }
   });
 
   /* ---------- copy email ---------- */
-  function selectText(el: Element): void {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const selection = getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-  }
-  $$('[data-copy]').forEach((button) => {
-    const label = $('.txt', button);
-    if (!label) return;
-    const original = label.textContent ?? '';
-    let timer: number | undefined;
-    button.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(button.dataset.copy ?? '');
-      } catch {
-        const mail = $('.mail');
-        if (mail) selectText(mail); // clipboard blocked: select the address so it can be copied by hand
-      }
-      button.classList.add('done');
-      label.textContent = button.dataset.done ?? original;
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        button.classList.remove('done');
-        label.textContent = original;
-      }, 1800);
+  run('copy', () => {
+    const selectText = (el: Element): void => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const selection = getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    };
+    $$('[data-copy]').forEach((button) => {
+      const label = $('.txt', button);
+      if (!label) return;
+      const original = label.textContent ?? '';
+      let timer: number | undefined;
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy ?? '');
+        } catch {
+          const mail = $('.mail');
+          if (mail) selectText(mail); // clipboard unavailable: select the address so it can be copied by hand
+        }
+        button.classList.add('done');
+        label.textContent = button.dataset.done ?? original;
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          button.classList.remove('done');
+          label.textContent = original;
+        }, 1800);
+      });
     });
   });
+
+  /* ---------- adaptive performance: measure real frame rate, then downgrade effects if needed ---------- */
+  type Tier = 'high' | 'medium' | 'low';
+  const tierRank: Record<Tier, number> = { high: 0, medium: 1, low: 2 };
+  const currentTier = (): Tier => (root.dataset.perf === 'low' || root.dataset.perf === 'medium' ? root.dataset.perf : 'high');
+  function setTier(tier: Tier): void {
+    root.dataset.perf = tier;
+    try { sessionStorage.setItem('perf', tier); } catch { /* storage unavailable */ }
+  }
+  function probeFrameRate(): void {
+    if (document.hidden || currentTier() === 'low') return;
+    const deltas: number[] = [];
+    let previous = 0;
+    const tick = (now: number): void => {
+      if (document.hidden) return;
+      if (previous) deltas.push(now - previous);
+      previous = now;
+      if (deltas.length < 45) {
+        requestAnimationFrame(tick);
+        return;
+      }
+      deltas.sort((a, b) => a - b);
+      const median = deltas[Math.floor(deltas.length / 2)];
+      const measured: Tier = median > 34 ? 'low' : median > 22 ? 'medium' : 'high';
+      setTier(tierRank[measured] > tierRank[currentTier()] ? measured : currentTier());
+    };
+    requestAnimationFrame(tick);
+  }
+  run('perf', () => {
+    const start = (): void => void window.setTimeout(probeFrameRate, 1800);
+    if (document.readyState === 'complete') start();
+    else addEventListener('load', start, { once: true });
+  });
+
+  root.classList.add('ready');
 </script>

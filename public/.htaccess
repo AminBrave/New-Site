@@ -1,0 +1,35 @@
+# Performance and security defaults for cPanel (Apache). GitHub Pages ignores this file.
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType application/javascript .js .mjs
+  AddCharset UTF-8 .html .css .js .svg
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/json
+</IfModule>
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css application/javascript image/svg+xml application/json
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 7 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Hashed build files never change: cache for a year.
+  <If "%{REQUEST_URI} =~ m#/_astro/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>

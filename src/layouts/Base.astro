@@ -9,9 +9,11 @@ interface Props {
   urls: Record<Lang, string>;
   name: string;
   jobTitle: string;
+  /** Font files to preload (first paint). */
+  preload?: string[];
 }
 
-const { lang, title, description, urls, name, jobTitle } = Astro.props;
+const { lang, title, description, urls, name, jobTitle, preload = [] } = Astro.props;
 const dir = lang === 'fa' ? 'rtl' : 'ltr';
 const abs = (path: string): string | null => (Astro.site ? new URL(path, Astro.site).href : null);
 const canonical = abs(urls[lang]);
@@ -24,6 +26,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#f4f6f8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f161c" media="(prefers-color-scheme: dark)" />
     {canonical && <link rel="canonical" href={canonical} />}
@@ -36,17 +39,33 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
     <meta name="twitter:card" content="summary" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232447f5'/%3E%3Cpath d='M9 22V10h7a4 4 0 010 8h-7' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E" />
+    {preload.map((href) => <link rel="preload" as="font" type="font/woff2" href={href} crossorigin="anonymous" />)}
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <script is:inline>
+      /* Runs before first paint. ES5 on purpose: it must work in every browser. */
       (function () {
-        var d = document.documentElement, t;
-        d.classList.add('js');
+        var d = document.documentElement, w = window, n = navigator, t, tier = 'high', s;
+        var enhanced = 'noModule' in HTMLScriptElement.prototype && 'IntersectionObserver' in w;
+        if (enhanced) d.classList.add('js');
+
         try { t = localStorage.getItem('theme'); } catch (e) {}
-        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        d.dataset.theme = t;
+        if (t !== 'light' && t !== 'dark') t = w.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        d.setAttribute('data-theme', t);
+
+        // Device tier from capability signals (not the user-agent string). The page script refines it by measuring frame rate.
+        var c = n.connection || n.mozConnection || n.webkitConnection || {};
+        var mem = n.deviceMemory, cores = n.hardwareConcurrency, et = c.effectiveType || '';
+        if (c.saveData || /2g$/.test(et) || (mem && mem <= 2) || (cores && cores <= 2) ||
+            (w.matchMedia && matchMedia('(prefers-reduced-data: reduce)').matches)) tier = 'low';
+        else if ((mem && mem <= 4) || (cores && cores <= 4) || et === '3g') tier = 'medium';
+        try { s = sessionStorage.getItem('perf'); if (s === 'low' || s === 'medium' || s === 'high') tier = s; } catch (e) {}
+        d.setAttribute('data-perf', tier);
+
         document.addEventListener('DOMContentLoaded', function () {
           var h = document.getElementById('top'); if (h) h.classList.add('run');
         });
+        // Fail open: if the page script never reports ready, show all content without animation gates.
+        setTimeout(function () { if (!d.classList.contains('ready')) d.classList.remove('js'); }, 4000);
       })();
     </script>
   </head>

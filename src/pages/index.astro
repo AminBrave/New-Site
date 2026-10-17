@@ -1,5 +1,7 @@
 ---
 import '../styles/fonts-en.css';
+import display from '../assets/fonts/bricolage-grotesque-latin-wght-normal.woff2?url';
+import body from '../assets/fonts/ibm-plex-sans-latin-400-normal.woff2?url';
 import Page from '../components/Page.astro';
 ---
-<Page lang="en" />
+<Page lang="en" preload={[display, body]} />

@@ -1,5 +1,7 @@
 ---
 import '../../styles/fonts-fa.css';
+import regular from '../../assets/fonts/vazirmatn-arabic-400-normal.woff2?url';
+import bold from '../../assets/fonts/vazirmatn-arabic-700-normal.woff2?url';
 import Page from '../../components/Page.astro';
 ---
-<Page lang="fa" />
+<Page lang="fa" preload={[regular, bold]} />

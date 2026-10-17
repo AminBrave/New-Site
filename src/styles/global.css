@@ -21,8 +21,9 @@
 /* ============ base ============ */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
-html:has(dialog[open]) { overflow: hidden; }
-body { margin: 0; overflow-x: clip; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.65 var(--body); transition: background .3s, color .3s; }
+html.modal-open { overflow: hidden; }
+dialog:not([open]) { display: none; }
+body { margin: 0; overflow-x: hidden; overflow-x: clip; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.65 var(--body); transition: background .3s, color .3s; }
 @media (max-width: 480px) { body { font-size: 1rem; } }
 a { color: var(--accent); text-underline-offset: 3px; }
 strong, b { font-weight: 700; }
@@ -147,7 +148,7 @@ p strong, li strong, .lead strong { color: var(--ink); }
 @keyframes rise { from { opacity: 0; transform: translateY(.45em); } }
 @keyframes hl { from { background-size: 0 42%; } }
 .js .hero:not(.run) :is(.lead, .roles, .btns) { opacity: 0; }
-.js .hero.run :is(.lead, .roles, .btns) { animation: reveal-in .8s var(--ease) 500ms backwards; }
+.js .hero.run :is(.lead, .roles, .btns) { animation: reveal-in .6s var(--ease) 250ms backwards; }
 .lead { max-width: 56ch; margin: 0 0 24px; color: var(--muted); font-size: clamp(1.05rem, 2.6vw, 1.25rem); }
 .roles { list-style: none; margin: 0 0 28px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .roles a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font-weight: 500; text-decoration: none; transition: border-color .2s, transform .2s var(--ease); }
@@ -265,8 +266,11 @@ h2 { margin: 0; font: 700 clamp(1.7rem, 5vw, 2.5rem)/1.2 var(--display); letter-
 .open::after { content: ''; position: absolute; inset: 0; border-radius: 20px; }
 .case:hover .open .ic { transform: translateX(4px); }
 [dir='rtl'] .case:hover .open .ic { transform: scaleX(-1) translateX(4px); }
-.open:focus-visible { outline: none; }
-.case:has(.open:focus-visible) { outline: 3px solid var(--accent); outline-offset: 3px; }
+.open:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
+@supports selector(:has(a)) {
+  .open:focus-visible { outline: none; }
+  .case:has(.open:focus-visible) { outline: 3px solid var(--accent); outline-offset: 3px; }
+}
 .tags { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
 .tags li { padding: 2px 10px; border-radius: 999px; background: color-mix(in srgb, var(--c, var(--accent)) 14%, transparent); font-size: .85rem; }
 .logo-tile { position: relative; flex: none; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--c); color: #fff; overflow: hidden; font: 700 1.1rem var(--display); }
@@ -294,7 +298,7 @@ h2 { margin: 0; font: 700 clamp(1.7rem, 5vw, 2.5rem)/1.2 var(--display); letter-
 .facts { display: grid; gap: 14px; margin: 0 0 16px; }
 @media (max-width: 819px) { .facts { grid-template-columns: 1fr 1fr; } }
 .facts > div { padding-bottom: 14px; border-bottom: 1px solid var(--line); }
-.facts > div:has(.chips) { grid-column: 1 / -1; }
+.facts > .wide { grid-column: 1 / -1; }
 .facts dt { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .9rem; }
 .facts dt .ic { color: var(--ct); }
 .facts dd { margin: 4px 0 0; font-weight: 500; }
@@ -400,8 +404,8 @@ footer { padding: 28px 0 48px; border-top: 1px solid var(--line); color: var(--m
 .js .branches:not(.in)::before { transform: scaleY(0); }
 .branch { position: relative; }
 .b-title { position: relative; display: flex; align-items: center; min-height: 24px; margin: 0 0 6px; color: var(--ink); font: 700 1.05rem/1.3 var(--display); }
-.b-title .tile { position: absolute; inset-inline-start: -40px; top: 50%; translate: 0 -50%; background-color: var(--paper); background-image: linear-gradient(color-mix(in srgb, var(--c) 14%, transparent), color-mix(in srgb, var(--c) 14%, transparent)); }
-.b-title::before { content: ''; position: absolute; inset-inline-start: -16px; top: 50%; width: 12px; height: 2px; background: var(--line); translate: 0 -1px; }
+.b-title .tile { position: absolute; inset-inline-start: -40px; top: 50%; transform: translateY(-50%); background-color: var(--paper); background-image: linear-gradient(color-mix(in srgb, var(--c) 14%, transparent), color-mix(in srgb, var(--c) 14%, transparent)); }
+.b-title::before { content: ''; position: absolute; inset-inline-start: -16px; top: 50%; width: 12px; height: 2px; background: var(--line); transform: translateY(-1px); }
 .branch.ai .b-title { color: var(--ct); }
 .branch.ai .b-title .tile { background-image: none; background-color: var(--c); color: var(--on-accent); }
 .leaves { list-style: none; margin: 0; padding: 0; }
@@ -410,7 +414,7 @@ footer { padding: 28px 0 48px; border-top: 1px solid var(--line); color: var(--m
 .leaves li::before { content: ''; position: absolute; inset-inline-start: 5px; top: 0; bottom: 0; width: 2px; background: var(--line); }
 .leaves li:first-child::before { top: -8px; }
 .leaves li:last-child::before { bottom: 50%; }
-.leaves li::after { content: ''; position: absolute; inset-inline-start: 5px; top: 50%; width: 14px; height: 2px; background: var(--line); translate: 0 -1px; transition: background .2s, width .25s var(--ease); }
+.leaves li::after { content: ''; position: absolute; inset-inline-start: 5px; top: 50%; width: 14px; height: 2px; background: var(--line); transform: translateY(-1px); transition: background .2s, width .25s var(--ease); }
 .branch.ai .leaves li::before, .branch.ai .leaves li::after { background: color-mix(in srgb, var(--c) 55%, var(--line)); }
 @media (hover: hover) { .leaves li:hover::after { width: 18px; background: var(--c); } }
 @media (prefers-reduced-motion: reduce) { .js .branches:not(.in)::before { transform: none; } }
@@ -438,3 +442,42 @@ footer { padding: 28px 0 48px; border-top: 1px solid var(--line); color: var(--m
 .is-active .tile.sub { border-color: color-mix(in srgb, var(--c, var(--accent)) 35%, transparent); }
 .is-active .tile.sub::after { --shine: rgba(255, 255, 255, .5); animation: sweep-loop 5s var(--ease) calc(.5s + var(--k, 0) * 140ms) infinite; }
 .rel-btn .logo-tile { flex: none; }
+
+/* ============ v6: compatibility fallbacks ============ */
+/* Browsers without color-mix() (Chrome < 111, Safari < 16.2, Firefox < 113): solid colors instead of tints. */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .case, .case-dlg, .disc, .more { --ct: var(--ink); }
+  .bar, .dlg-bar { background: var(--paper); }
+  .menu-nav a:hover, .menu-nav a[aria-current='true'] { background: var(--line); }
+  .hero::after { display: none; }
+  .art .tint { fill: var(--line); }
+  .tile, .tags li { background: var(--line); }
+  .tile.sub, .is-active .sh .tile, .is-active .tile.sub { border-color: var(--line); box-shadow: none; animation: none; }
+  .tile::before, .logo-tile::before { background: none; }
+  .steps .tile, .b-title .tile { background-image: none; background-color: var(--paper); }
+  .branch.ai .b-title .tile { background-color: var(--c); }
+  .branch.ai .leaves li::before, .branch.ai .leaves li::after { background: var(--c); }
+  .case:hover, .chips li:hover { box-shadow: none; }
+  .more { background: transparent; border-color: var(--c); }
+  .cover { background: var(--c); }
+  .ai-box { background: none; border-color: var(--line); }
+  .quote { background: var(--surface); }
+}
+@supports not (aspect-ratio: 1) { .gallery img, .gallery .ph { height: 110px; } }
+
+/* <dialog> without showModal() (Safari < 15.4, Firefox < 98): the page script opens it as a fixed overlay. */
+.legacy-backdrop { position: fixed; inset: 0; z-index: 1000; background: rgba(8, 12, 16, .62); }
+.legacy-backdrop[hidden] { display: none; }
+dialog.legacy[open] { display: block; position: fixed; z-index: 1001; top: 50%; left: 50%; margin: 0; transform: translate(-50%, -50%); }
+dialog.menu-dlg.legacy[open] { top: 0; right: 0; left: auto; transform: none; }
+[dir='rtl'] dialog.menu-dlg.legacy[open] { right: auto; left: 0; }
+
+/* ============ v6: device tiers (data-perf = high | medium | low) ============ */
+/* medium: keep the design, drop the costly effects (blur, endless hero float). */
+[data-perf='medium'] .bar, [data-perf='medium'] .dlg-bar, [data-perf='low'] .bar, [data-perf='low'] .dlg-bar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
+[data-perf='medium'] .menu-dlg::backdrop, [data-perf='medium'] .case-dlg::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
+[data-perf='low'] .menu-dlg::backdrop, [data-perf='low'] .case-dlg::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.js[data-perf='medium'] .hero.run .art .card { animation: card-in .9s var(--ease) backwards; animation-delay: calc(var(--i) * 160ms + 350ms); }
+/* low: no animation and no glow. Content and layout stay identical. */
+[data-perf='low'] *, [data-perf='low'] *::before, [data-perf='low'] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+[data-perf='low'] :is(.tile, .case, .more, .btn, .chips li) { box-shadow: none !important; }

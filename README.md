@@ -33,3 +33,30 @@ Wrap any text in `**double asterisks**` inside `src/data/content.js` to make it 
 
 ## Fonts
 Fonts are bundled in `src/assets/fonts` (declared in `src/styles/fonts-en.css` and `fonts-fa.css`): Bricolage Grotesque and IBM Plex Sans for English, Vazirmatn for Persian. No external font requests and no font packages to install.
+
+## Browser support and performance
+**Supported baseline:** Chrome/Edge 87+, Firefox 78+, Safari/iOS 14+, Samsung Internet 14+. Everything works on the
+latest two versions of each; older browsers in the baseline get graceful fallbacks, never a broken page.
+
+| Situation | What happens |
+|---|---|
+| No `color-mix()` (Chrome < 111, Safari < 16.2, Firefox < 113) | Solid-color fallbacks replace the tinted backgrounds, borders and glows |
+| No `<dialog>.showModal()` (Safari < 15.4, Firefox < 98) | Modals open as a fixed overlay with a backdrop, Esc and focus handling |
+| No `IntersectionObserver` or module scripts | Reveal animations are skipped and all content is visible; section tracking falls back to scroll position |
+| Main script fails or is blocked | After 4 seconds the page removes its animation gates, so nothing stays hidden |
+| No JavaScript | Content and the dot navigation links still work |
+
+**Adaptive effects (`data-perf` on `<html>`):** chosen automatically, without reading the user-agent string.
+1. Before first paint: capability signals (`deviceMemory`, `hardwareConcurrency`, Save-Data, slow connection, reduced data).
+2. After load: a ~1 second frame-rate probe can downgrade the tier on a slow device. The result is kept for the session.
+
+| Tier | Effects |
+|---|---|
+| high | Everything: blur, looping icon shine, floating hero cards |
+| medium | No background blur, hero cards do not float |
+| low | No animations, transitions or glow. Layout and content are identical |
+
+`prefers-reduced-motion` and `prefers-color-scheme` are always respected.
+
+**cPanel:** `public/.htaccess` turns on compression, one-year caching for hashed files and basic security headers.
+GitHub Pages ignores it. Fonts are preloaded, CSS is inlined, and the page script is about 6 KB.
