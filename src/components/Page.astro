@@ -1,0 +1,195 @@
+---
+import Base from '../layouts/Base.astro';
+import { content } from '../data/content.js';
+const { lang } = Astro.props;
+const t = content[lang];
+const root = import.meta.env.BASE_URL.replace(/\/$/, '');
+const urls = { en: `${root}/`, fa: `${root}/fa/` };
+const fmt = (n) => n.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US');
+const resume = t.resumeUrl ? `${root}/${t.resumeUrl}` : '';
+const ids = ['top', 'skills', 'process', 'work', 'resume', 'contact'];
+const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
+const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+---
+<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls}>
+  <a class="skip" href="#main">{t.ui.skip}</a>
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="bar">
+    <div class="wrap bar-in">
+      <a class="brand" href="#top"><span class="logo" aria-hidden="true"></span>{t.name}</a>
+      <div class="tools">
+        <nav class="lang" dir="ltr" aria-label={t.ui.langLabel} data-active={lang}>
+          <a href={urls.en} lang="en" hreflang="en" aria-current={lang === 'en' ? 'true' : undefined} aria-label="English">EN</a>
+          <a href={urls.fa} lang="fa" hreflang="fa" aria-current={lang === 'fa' ? 'true' : undefined} aria-label="فارسی">FA</a>
+        </nav>
+        <button class="theme" type="button" aria-label={t.ui.theme} data-theme-toggle>
+          <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="dots" aria-label={t.ui.sections}>
+    <ol>
+      {ids.map((id, i) => (
+        <li><a href={`#${id}`} aria-current={i === 0 ? 'true' : undefined}><span class="lab">{t.ui.nav[id]}</span><span class="pip"></span></a></li>
+      ))}
+    </ol>
+  </nav>
+
+  <main id="main">
+    <section class="hero" id="top" data-section>
+      <div class="wrap">
+        <h1>
+          {t.hero.map((p, i) => (
+            <Fragment><span class:list={['w', { mark: p.mark }]} style={`--i:${i}`}>{p.t}</span>{' '}</Fragment>
+          ))}
+        </h1>
+        <p class="lead">{t.intro}</p>
+        <ul class="roles">
+          {t.roles.map((r) => <li><a href={r.href}>{r.label}</a></li>)}
+        </ul>
+        <div class="btns">
+          <a class="btn primary" href="#work"><span>{t.ui.ctaWork}</span><span class="arr" set:html={arrow} /></a>
+          <a class="btn" href={`mailto:${t.email}`}>{t.ui.ctaMail}</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" data-section><div class="wrap">
+      <h2>{t.skillsHead}</h2>
+      <p class="sub">{t.title}.</p>
+      {t.disciplines.map((d) => (
+        <article class="disc" id={d.id}>
+          <div><h3>{d.name}</h3><p>{d.summary}</p></div>
+          <ul class="chips">{d.skills.map((s) => <li>{s}</li>)}</ul>
+        </article>
+      ))}
+    </div></section>
+
+    <section id="process" data-section><div class="wrap">
+      <h2>{t.processHead}</h2>
+      <p class="sub">{t.processSub}</p>
+      <ol class="steps">
+        {t.process.map((p, i) => (
+          <li style={`--i:${i}`}><span class="num" aria-hidden="true">{fmt(i + 1)}</span><strong>{p.step}</strong><span class="txt">{p.text}</span></li>
+        ))}
+      </ol>
+    </div></section>
+
+    <section id="work" data-section><div class="wrap">
+      <h2>{t.workHead}</h2>
+      <p class="sub">{t.workSub}</p>
+      {t.work.map((w) => (
+        <article class="case">
+          <div>
+            <h3>{w.href ? <a href={w.href}>{w.title}</a> : w.title}</h3>
+            <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
+          </div>
+          <dl>
+            <dt>{t.ui.problem}</dt><dd>{w.problem}</dd>
+            <dt>{t.ui.role}</dt><dd>{w.role}</dd>
+            <dt>{t.ui.result}</dt><dd>{w.outcome}</dd>
+          </dl>
+        </article>
+      ))}
+    </div></section>
+
+    <section id="resume" data-section><div class="wrap">
+      <h2>{t.resumeHead}</h2>
+      <ul class="xp">
+        {t.experience.map((e) => (
+          <li><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
+        ))}
+      </ul>
+      {resume && <p><a class="btn" href={resume}>{t.ui.download}</a></p>}
+    </div></section>
+
+    <section id="contact" class="contact" data-section><div class="wrap">
+      <h2>{t.contactHead}</h2>
+      <p class="sub">{t.contactSub}</p>
+      <div class="mailrow">
+        <a class="mail" dir="ltr" href={`mailto:${t.email}`}>{t.email}</a>
+        <button class="btn copy" type="button" data-copy={t.email} data-done={t.ui.copied}>
+          <svg class="i-copy" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15V6a2 2 0 012-2h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="i-check" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="txt" aria-live="polite">{t.ui.copy}</span>
+        </button>
+      </div>
+      <ul class="links">
+        {t.links.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}
+      </ul>
+    </div></section>
+  </main>
+
+  <footer><div class="wrap">© {year} {t.name}</div></footer>
+</Base>
+
+<script>
+  const root = document.documentElement;
+  const bar = document.querySelector('.bar');
+  const prog = document.querySelector('.progress');
+  const links = [...document.querySelectorAll('.dots a')];
+  const byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+  const setActive = (a) => {
+    links.forEach((l) => l.removeAttribute('aria-current'));
+    a && a.setAttribute('aria-current', 'true');
+  };
+
+  let queued = false;
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      const max = root.scrollHeight - window.innerHeight;
+      prog.style.setProperty('--p', String(max > 0 ? Math.min(y / max, 1) : 0));
+      bar.classList.toggle('scrolled', y > 8);
+      if (max > 0 && max - y < 4) setActive(links[links.length - 1]);
+      queued = false;
+    });
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => e.isIntersecting && setActive(byId.get(e.target.id))),
+    { rootMargin: '-45% 0px -50% 0px' }
+  );
+  document.querySelectorAll('[data-section]').forEach((s) => io.observe(s));
+
+  const steps = document.querySelector('.steps');
+  if (steps) {
+    const so = new IntersectionObserver((es) => {
+      if (es[0].isIntersecting) { steps.classList.add('in'); so.disconnect(); }
+    }, { threshold: 0.35 });
+    so.observe(steps);
+  }
+
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+
+  document.querySelectorAll('[data-copy]').forEach((b) => {
+    const label = b.querySelector('.txt');
+    const original = label.textContent;
+    b.addEventListener('click', async () => {
+      const v = b.dataset.copy;
+      try { await navigator.clipboard.writeText(v); }
+      catch {
+        const ta = document.createElement('textarea');
+        ta.value = v; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch {}
+        ta.remove();
+      }
+      b.classList.add('done');
+      label.textContent = b.dataset.done;
+      clearTimeout(b._t);
+      b._t = setTimeout(() => { b.classList.remove('done'); label.textContent = original; }, 1800);
+    });
+  });
+</script>

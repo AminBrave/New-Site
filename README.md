@@ -1,6 +1,6 @@
 # Portfolio
 
-Static portfolio built with [Astro](https://astro.build). All content lives in `src/data/site.js`.
+Bilingual (English `/` and Persian `/fa/`) static portfolio built with [Astro](https://astro.build). All content lives in `src/data/content.js`.
 
 ## Run locally
 ```
@@ -18,4 +18,4 @@ Run `npm run build` (without ASTRO_BASE set), then upload the contents of `dist/
 (or a subdomain folder).
 
 ## Before publishing
-Replace every `TODO` in `src/data/site.js`: name, email, links, projects, experience, and resume file.
+Replace every `TODO` in `src/data/content.js`: name, email, links, projects, experience, and resume file.
