@@ -62,16 +62,25 @@ export const content = {
         name: 'UI/UX design',
         summary:
           'Interfaces people understand on the first try. I start with who is using the product and what stops them, then design the simplest path to their goal, with **AI-assisted** exploration to widen the options.',
-        skills: [
-          'User research and interviews',
-          'Information architecture and user flows',
-          'Wireframing and interactive prototyping',
-          'Design systems and component libraries',
-          'Usability testing and iteration',
-          'Accessibility (WCAG 2.1 AA)',
-          'Conversion-focused ecommerce UX',
-          'Responsive and mobile-first design',
-          '**AI-assisted design** and rapid prototyping',
+        groups: [
+          { title: 'Research and strategy', icon: 'search', items: [
+            'User research and interviews',
+            'Information architecture and user flows',
+            'Usability testing and iteration',
+          ] },
+          { title: 'Design and systems', icon: 'pen', items: [
+            'Wireframing and interactive prototyping',
+            'Design systems and component libraries',
+            'Responsive and mobile-first design',
+          ] },
+          { title: 'Quality and growth', icon: 'target', items: [
+            'Accessibility (WCAG 2.1 AA)',
+            'Conversion-focused ecommerce UX',
+          ] },
+          { title: 'AI workflow', icon: 'spark', ai: true, items: [
+            '**AI-assisted design** and rapid prototyping',
+            'Research and feedback synthesis',
+          ] },
         ],
         detail: {
           overview:
@@ -112,16 +121,25 @@ export const content = {
         name: 'WordPress and WooCommerce development',
         summary:
           'Stores that are fast, maintainable, and easy for the client to run. I build what the design calls for without piling plugins on top of each other, with **AI-assisted development** and careful review.',
-        skills: [
-          'Custom themes and block themes',
-          'Custom plugins and WooCommerce extensions',
-          'Cart and checkout customization',
-          'Payment, shipping, and tax integrations',
-          'Performance and Core Web Vitals tuning',
-          'Store migrations and platform upgrades',
-          'REST API and third-party integrations',
-          'Security hardening and maintenance',
-          '**AI-assisted development**, code review, and testing',
+        groups: [
+          { title: 'Build and extend', icon: 'code', items: [
+            'Custom themes and block themes',
+            'Custom plugins and WooCommerce extensions',
+            'REST API and third-party integrations',
+          ] },
+          { title: 'Store experience', icon: 'cart', items: [
+            'Cart and checkout customization',
+            'Payment, shipping, and tax integrations',
+          ] },
+          { title: 'Speed and care', icon: 'shield', items: [
+            'Performance and Core Web Vitals tuning',
+            'Store migrations and platform upgrades',
+            'Security hardening and maintenance',
+          ] },
+          { title: 'AI workflow', icon: 'spark', ai: true, items: [
+            '**AI-assisted development** and code review',
+            'Test generation and debugging',
+          ] },
         ],
         detail: {
           overview:
@@ -162,17 +180,26 @@ export const content = {
         name: 'Content strategy and brand visuals',
         summary:
           'Content that has a job: words, visuals, and video working as one brand. I decide what needs to be said, to whom, and where, then shape it through **brand visual identity**, **graphic content**, **photography**, and **videography**, using **AI** where it helps.',
-        skills: [
-          '**Brand visual identity**',
-          '**Graphic content** for web and social',
-          '**Photography**',
-          '**Videography** and video editing',
-          '**AI-assisted content** and strategy',
-          'Content audits and gap analysis',
-          'Site structure and taxonomy',
-          'UX writing and microcopy',
-          'SEO content planning',
-          'Brand voice and style guides',
+        groups: [
+          { title: 'Brand and visuals', icon: 'palette', items: [
+            '**Brand visual identity**',
+            '**Graphic content** for web and social',
+            'Brand voice and style guides',
+          ] },
+          { title: 'Photo and video', icon: 'camera', items: [
+            '**Photography**',
+            '**Videography** and video editing',
+          ] },
+          { title: 'Strategy and structure', icon: 'layers', items: [
+            'Content audits and gap analysis',
+            'Site structure and taxonomy',
+            'SEO content planning',
+            'UX writing and microcopy',
+          ] },
+          { title: 'AI workflow', icon: 'spark', ai: true, items: [
+            '**AI-assisted content** and strategy',
+            'Image and video generation',
+          ] },
         ],
         detail: {
           overview:
@@ -360,16 +387,25 @@ export const content = {
         name: 'طراحی UI/UX',
         summary:
           'رابط‌هایی که کاربر همان بار اول می‌فهمد. از اینجا شروع می‌کنم که چه کسی از محصول استفاده می‌کند و چه چیزی او را متوقف می‌کند، سپس ساده‌ترین مسیر تا هدفش را طراحی می‌کنم و برای گسترش گزینه‌ها از کاوش **با کمک هوش مصنوعی** استفاده می‌کنم.',
-        skills: [
-          'پژوهش کاربر و مصاحبه',
-          'معماری اطلاعات و جریان‌های کاربری',
-          'وایرفریم و پروتوتایپ تعاملی',
-          'سیستم طراحی و کتابخانه کامپوننت',
-          'تست کاربردپذیری و بهبود مستمر',
-          'دسترس‌پذیری (WCAG 2.1 AA)',
-          'تجربه کاربری متمرکز بر نرخ تبدیل',
-          'طراحی واکنش‌گرا و موبایل‌محور',
-          '**طراحی با کمک هوش مصنوعی** و پروتوتایپ سریع',
+        groups: [
+          { title: 'پژوهش و راهبرد', icon: 'search', items: [
+            'پژوهش کاربر و مصاحبه',
+            'معماری اطلاعات و جریان‌های کاربری',
+            'تست کاربردپذیری و بهبود مستمر',
+          ] },
+          { title: 'طراحی و سیستم', icon: 'pen', items: [
+            'وایرفریم و پروتوتایپ تعاملی',
+            'سیستم طراحی و کتابخانه کامپوننت',
+            'طراحی واکنش‌گرا و موبایل‌محور',
+          ] },
+          { title: 'کیفیت و رشد', icon: 'target', items: [
+            'دسترس‌پذیری (WCAG 2.1 AA)',
+            'تجربه کاربری متمرکز بر نرخ تبدیل',
+          ] },
+          { title: 'جریان کاری هوش مصنوعی', icon: 'spark', ai: true, items: [
+            '**طراحی با کمک هوش مصنوعی** و پروتوتایپ سریع',
+            'جمع‌بندی پژوهش و بازخورد',
+          ] },
         ],
         detail: {
           overview:
@@ -410,16 +446,25 @@ export const content = {
         name: 'توسعه وردپرس و ووکامرس',
         summary:
           'فروشگاه‌هایی سریع، قابل نگهداری و ساده برای مدیریت توسط کارفرما. آنچه طراحی می‌خواهد را می‌سازم، بدون انباشتن افزونه روی افزونه، با **توسعه با کمک هوش مصنوعی** و بازبینی دقیق.',
-        skills: [
-          'قالب‌های سفارشی و قالب‌های بلوکی',
-          'افزونه‌های سفارشی و توسعه ووکامرس',
-          'شخصی‌سازی سبد خرید و تسویه‌حساب',
-          'اتصال به درگاه پرداخت، حمل‌ونقل و مالیات',
-          'بهینه‌سازی سرعت و Core Web Vitals',
-          'انتقال و ارتقای فروشگاه',
-          'REST API و اتصال به سرویس‌های خارجی',
-          'امنیت و نگهداری',
-          '**توسعه با کمک هوش مصنوعی**، بازبینی کد و تست',
+        groups: [
+          { title: 'ساخت و توسعه', icon: 'code', items: [
+            'قالب‌های سفارشی و قالب‌های بلوکی',
+            'افزونه‌های سفارشی و توسعه ووکامرس',
+            'REST API و اتصال به سرویس‌های خارجی',
+          ] },
+          { title: 'تجربه فروشگاه', icon: 'cart', items: [
+            'شخصی‌سازی سبد خرید و تسویه‌حساب',
+            'اتصال به درگاه پرداخت، حمل‌ونقل و مالیات',
+          ] },
+          { title: 'سرعت و نگهداری', icon: 'shield', items: [
+            'بهینه‌سازی سرعت و Core Web Vitals',
+            'انتقال و ارتقای فروشگاه',
+            'امنیت و نگهداری',
+          ] },
+          { title: 'جریان کاری هوش مصنوعی', icon: 'spark', ai: true, items: [
+            '**توسعه با کمک هوش مصنوعی** و بازبینی کد',
+            'تولید تست و رفع اشکال',
+          ] },
         ],
         detail: {
           overview:
@@ -460,17 +505,26 @@ export const content = {
         name: 'استراتژی محتوا و هویت بصری',
         summary:
           'محتوایی که وظیفه دارد؛ متن، تصویر و ویدیو در قالب یک برند. تصمیم می‌گیرم چه چیزی، به چه کسی و کجا گفته شود، و آن را با **هویت بصری برند**، **محتوای گرافیکی**، **عکاسی** و **ویدیو** شکل می‌دهم؛ در جاهایی که کمک می‌کند، با **هوش مصنوعی**.',
-        skills: [
-          '**هویت بصری برند**',
-          '**محتوای گرافیکی** برای وب و شبکه‌های اجتماعی',
-          '**عکاسی**',
-          '**تولید و تدوین ویدیو**',
-          '**محتوا و استراتژی با کمک هوش مصنوعی**',
-          'ممیزی محتوا و تحلیل شکاف',
-          'ساختار سایت و طبقه‌بندی',
-          'نگارش رابط کاربری (UX Writing) و میکروکپی',
-          'برنامه‌ریزی محتوای سئو',
-          'لحن برند و راهنمای نگارش',
+        groups: [
+          { title: 'برند و بصری', icon: 'palette', items: [
+            '**هویت بصری برند**',
+            '**محتوای گرافیکی** برای وب و شبکه‌های اجتماعی',
+            'لحن برند و راهنمای نگارش',
+          ] },
+          { title: 'عکس و ویدیو', icon: 'camera', items: [
+            '**عکاسی**',
+            '**تولید و تدوین ویدیو**',
+          ] },
+          { title: 'استراتژی و ساختار', icon: 'layers', items: [
+            'ممیزی محتوا و تحلیل شکاف',
+            'ساختار سایت و طبقه‌بندی',
+            'برنامه‌ریزی محتوای سئو',
+            'نگارش رابط کاربری (UX Writing) و میکروکپی',
+          ] },
+          { title: 'جریان کاری هوش مصنوعی', icon: 'spark', ai: true, items: [
+            '**محتوا و استراتژی با کمک هوش مصنوعی**',
+            'تولید تصویر و ویدیو با هوش مصنوعی',
+          ] },
         ],
         detail: {
           overview:

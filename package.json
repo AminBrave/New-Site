@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview --host"
+    "preview": "astro preview"
   },
   "dependencies": {
     "astro": "^7.4.0"
+  },
+  "engines": {
+    "node": ">=22.22.0"
   }
 }

@@ -105,9 +105,18 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
             <p set:html={rich(d.summary)} />
             <button class="more" type="button" data-open={`skill-${d.id}`} aria-haspopup="dialog"><span>{t.ui.explore}</span><Icon name="arrow" size={18} /><span class="sr"> — {d.name}</span></button>
           </div>
-          <ul class="chips" data-stagger>
-            {d.skills.map((s, i) => <li style={`--k:${i}`} set:html={rich(s)} />)}
-          </ul>
+          <div class="tree">
+            <ul class="branches" data-stagger>
+              {d.groups.map((g, gi) => (
+                <li class:list={['branch', { ai: g.ai }]} style={`--k:${gi}`}>
+                  <h4 class="b-title"><span class="tile xs sub" style={`--k:${gi}`}><Icon name={g.icon} size={14} /></span>{g.title}</h4>
+                  <ul class="leaves">
+                    {g.items.map((s) => <li set:html={rich(s)} />)}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
         </article>
       ))}
     </div></section>

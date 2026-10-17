@@ -2,6 +2,9 @@
 
 Bilingual (English `/` and Persian `/fa/`) static portfolio built with [Astro](https://astro.build). All content lives in `src/data/content.js`.
 
+## Requirements
+Node.js 22.22 or newer (Astro 7).
+
 ## Run locally
 ```
 npm install
