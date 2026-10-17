@@ -1,12 +1,10 @@
 ---
 import '../styles/global.css';
-const { lang, title, description, urls } = Astro.props;
+const { lang, title, description, urls, name, jobTitle } = Astro.props;
 const dir = lang === 'fa' ? 'rtl' : 'ltr';
 const abs = (p) => (Astro.site ? new URL(p, Astro.site).href : null);
 const canonical = abs(urls[lang]);
-const fonts = lang === 'fa'
-  ? 'family=Vazirmatn:wght@400;500;700'
-  : 'family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500';
+const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle, inLanguage: lang, ...(canonical ? { url: canonical } : {}) };
 ---
 <!doctype html>
 <html lang={lang} dir={dir}>
@@ -21,13 +19,13 @@ const fonts = lang === 'fa'
     {canonical && <link rel="alternate" hreflang="en" href={abs(urls.en)} />}
     {canonical && <link rel="alternate" hreflang="fa" href={abs(urls.fa)} />}
     {canonical && <link rel="alternate" hreflang="x-default" href={abs(urls.en)} />}
+    <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
+    <meta name="twitter:card" content="summary" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232447f5'/%3E%3Cpath d='M9 22V10h7a4 4 0 010 8h-7' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href={`https://fonts.googleapis.com/css2?${fonts}&display=swap`} rel="stylesheet" />
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <script is:inline>
       (function () {
         var d = document.documentElement, t;
@@ -35,6 +33,9 @@ const fonts = lang === 'fa'
         try { t = localStorage.getItem('theme'); } catch (e) {}
         if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         d.dataset.theme = t;
+        document.addEventListener('DOMContentLoaded', function () {
+          var h = document.getElementById('top'); if (h) h.classList.add('run');
+        });
       })();
     </script>
   </head>

@@ -3,38 +3,35 @@ import Base from '../layouts/Base.astro';
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
 import { content, workShared } from '../data/content.js';
+import { rich } from '../lib/rich.js';
+
 const { lang } = Astro.props;
 const t = content[lang];
 const root = import.meta.env.BASE_URL.replace(/\/$/, '');
 const urls = { en: `${root}/`, fa: `${root}/fa/` };
 const fmt = (n) => n.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US');
-const resume = t.resumeUrl ? `${root}/${t.resumeUrl}` : '';
-const works = t.work.map((w) => ({ ...w, ...workShared[w.id] }));
 const src = (p) => (!p ? '' : /^(https?:)?\/\//.test(p) ? p : `${root}/${p.replace(/^\//, '')}`);
+const works = t.work.map((w) => ({ ...w, ...workShared[w.id] }));
+const meta = { ux: { icon: 'ux', color: '#2447f5' }, woo: { icon: 'cart', color: '#6d33e0' }, content: { icon: 'content', color: '#0b8a7b' } };
+const discs = t.disciplines.map((d) => ({ ...d, ...meta[d.id] }));
 const navIcons = { top: 'home', skills: 'layers', process: 'route', work: 'briefcase', resume: 'file', contact: 'mail' };
-const discIcons = { ux: 'ux', woo: 'cart', content: 'content' };
 const stepIcons = ['search', 'target', 'pen', 'code', 'trend'];
 const ids = ['top', 'skills', 'process', 'work', 'resume', 'contact'];
 const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 ---
-<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls}>
+<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls} name={t.name} jobTitle={t.title}>
   <a class="skip" href="#main">{t.ui.skip}</a>
   <div class="progress" aria-hidden="true"></div>
 
   <header class="bar">
     <div class="wrap bar-in">
-      <a class="brand" href="#top"><span class="logo" aria-hidden="true"></span>{t.name}</a>
-      <div class="tools">
-        <nav class="lang" dir="ltr" aria-label={t.ui.langLabel} data-active={lang}>
-          <a href={urls.en} lang="en" hreflang="en" aria-current={lang === 'en' ? 'true' : undefined} aria-label="English">EN</a>
-          <a href={urls.fa} lang="fa" hreflang="fa" aria-current={lang === 'fa' ? 'true' : undefined} aria-label="فارسی">FA</a>
-        </nav>
-        <button class="theme" type="button" aria-label={t.ui.theme} data-theme-toggle>
-          <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
+      <a class="brand" href="#top"><span class="logo" aria-hidden="true"></span><span class="bname">{t.name}</span></a>
+      <noscript><a class="ns-lang" href={urls[lang === 'fa' ? 'en' : 'fa']}>{lang === 'fa' ? 'English' : 'فارسی'}</a></noscript>
+      <button class="menu-btn" type="button" data-open="menu" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">
+        <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="mlabel">{t.ui.menu}</span>
+      </button>
     </div>
   </header>
 
@@ -47,7 +44,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
   </nav>
 
   <main id="main">
-    <section class="hero" id="top" data-section>
+    <section class="hero" id="top" tabindex="-1" data-section>
       <div class="wrap hero-grid">
         <div class="hero-text">
           <h1>
@@ -55,7 +52,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
               <Fragment><span class:list={['w', { mark: p.mark }]} style={`--i:${i}`}>{p.t}</span>{' '}</Fragment>
             ))}
           </h1>
-          <p class="lead">{t.intro}</p>
+          <p class="lead" set:html={rich(t.intro)} />
           <ul class="roles">
             {t.roles.map((r, i) => <li><a href={r.href} class={`r-${['ux', 'woo', 'content'][i]}`}><Icon name={['ux', 'cart', 'content'][i]} size={18} />{r.label}</a></li>)}
           </ul>
@@ -97,59 +94,71 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
       </div>
     </section>
 
-    <section id="skills" data-section><div class="wrap">
-      <div class="sh"><span class="tile"><Icon name="layers" size={24} /></span><h2>{t.skillsHead}</h2></div>
-      <p class="sub">{t.title}.</p>
-      {t.disciplines.map((d) => (
-        <article class={`disc d-${d.id}`} id={d.id}>
-          <div><span class="tile lg"><Icon name={discIcons[d.id]} size={28} /></span><h3>{d.name}</h3><p>{d.summary}</p></div>
-          <ul class="chips">{d.skills.map((s) => <li>{s}</li>)}</ul>
+    <section id="skills" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="layers" size={24} /></span><h2>{t.skillsHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1">{t.title}.</p>
+      {discs.map((d, k) => (
+        <article class={`disc d-${d.id}`} id={d.id} data-reveal>
+          <div class="disc-main">
+            <span class="tile lg sub" style={`--k:${k}`}><Icon name={d.icon} size={28} /></span>
+            <h3>{d.name}</h3>
+            <p set:html={rich(d.summary)} />
+            <button class="more" type="button" data-open={`skill-${d.id}`} aria-haspopup="dialog"><span>{t.ui.explore}</span><Icon name="arrow" size={18} /><span class="sr"> — {d.name}</span></button>
+          </div>
+          <ul class="chips" data-stagger>
+            {d.skills.map((s, i) => <li style={`--k:${i}`} set:html={rich(s)} />)}
+          </ul>
         </article>
       ))}
     </div></section>
 
-    <section id="process" data-section><div class="wrap">
-      <div class="sh"><span class="tile"><Icon name="route" size={24} /></span><h2>{t.processHead}</h2></div>
-      <p class="sub">{t.processSub}</p>
-      <ol class="steps">
+    <section id="process" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="route" size={24} /></span><h2>{t.processHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1" set:html={rich(t.processSub)} />
+      <ol class="steps" data-steps>
         {t.process.map((p, i) => (
-          <li style={`--i:${i}`}><span class="num" aria-hidden="true"><span class="tile sm"><Icon name={stepIcons[i]} size={18} /></span>{fmt(i + 1)}</span><strong>{p.step}</strong><span class="txt">{p.text}</span></li>
+          <li style={`--i:${i};--d:${i}`} data-reveal>
+            <span class="num" aria-hidden="true"><span class="tile sm sub" style={`--k:${i}`}><Icon name={stepIcons[i]} size={18} /></span></span>
+            <strong><span class="n">{fmt(i + 1)}</span> {p.step}</strong>
+            <span class="txt">{p.text}</span>
+          </li>
         ))}
       </ol>
     </div></section>
 
-    <section id="work" data-section><div class="wrap">
-      <div class="sh"><span class="tile"><Icon name="briefcase" size={24} /></span><h2>{t.workHead}</h2></div>
-      <p class="sub">{t.workSub}</p>
+    <section id="work" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="briefcase" size={24} /></span><h2>{t.workHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1">{t.workSub}</p>
       <div class="cases">
-        {works.map((w) => (
-          <article class="case" style={`--c:${w.color}`}>
-            <div class="case-head">
-              <Logo w={w} />
-              <div><h3>{w.title}</h3><p class="client">{w.client} · {w.year}</p></div>
-            </div>
-            <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
-            <p class="case-sum">{w.summary}</p>
-            <button class="open" type="button" data-open={w.id} aria-haspopup="dialog"><span>{t.ui.viewCase}</span><Icon name="arrow" size={18} /><span class="sr"> — {w.title}</span></button>
-          </article>
+        {works.map((w, i) => (
+          <div class="case-wrap" data-reveal style={`--d:${i}`}>
+            <article class="case" style={`--c:${w.color}`}>
+              <div class="case-head">
+                <Logo w={w} />
+                <div><h3>{w.title}</h3><p class="client">{w.client} · {w.year}</p></div>
+              </div>
+              <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
+              <p class="case-sum" set:html={rich(w.summary)} />
+              <button class="open" type="button" data-open={`case-${w.id}`} aria-haspopup="dialog"><span>{t.ui.viewCase}</span><Icon name="arrow" size={18} /><span class="sr"> — {w.title}</span></button>
+            </article>
+          </div>
         ))}
       </div>
     </div></section>
 
-    <section id="resume" data-section><div class="wrap">
-      <div class="sh"><span class="tile"><Icon name="file" size={24} /></span><h2>{t.resumeHead}</h2></div>
+    <section id="resume" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="file" size={24} /></span><h2>{t.resumeHead}</h2></div>
       <ul class="xp">
-        {t.experience.map((e) => (
-          <li><span class="dot"><Icon name="briefcase" size={14} /></span><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
+        {t.experience.map((e, i) => (
+          <li data-reveal style={`--d:${i};--k:${i}`}><span class="dot"><Icon name="briefcase" size={14} /></span><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
         ))}
       </ul>
-      {resume && <p><a class="btn" href={resume}><Icon name="file" size={18} />{t.ui.download}</a></p>}
     </div></section>
 
-    <section id="contact" class="contact" data-section><div class="wrap">
-      <div class="sh"><span class="tile"><Icon name="mail" size={24} /></span><h2>{t.contactHead}</h2></div>
-      <p class="sub">{t.contactSub}</p>
-      <div class="mailrow">
+    <section id="contact" class="contact" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="mail" size={24} /></span><h2>{t.contactHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1">{t.contactSub}</p>
+      <div class="mailrow" data-reveal style="--d:2">
         <a class="mail" dir="ltr" href={`mailto:${t.email}`}>{t.email}</a>
         <button class="btn copy" type="button" data-copy={t.email} data-done={t.ui.copied}>
           <svg class="i-copy" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15V6a2 2 0 012-2h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -157,76 +166,177 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
           <span class="txt" aria-live="polite">{t.ui.copy}</span>
         </button>
       </div>
-      <ul class="links">
+      <ul class="links" data-reveal style="--d:3">
         {t.links.map((l) => <li><a href={l.href} rel="noopener">{l.label}<Icon name="external" size={15} /></a></li>)}
       </ul>
     </div></section>
   </main>
 
-  <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
-</Base>
-
-{works.map((w) => (
-  <dialog class="case-dlg" id={`case-${w.id}`} aria-labelledby={`case-${w.id}-t`} style={`--c:${w.color}`}>
-    <div class="dlg-bar">
-      <div class="dlg-id"><Logo w={w} size="sm" /><span>{w.client}</span></div>
-      <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
-    </div>
-    <div class="cover" aria-hidden="true">
-      <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`g-${w.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#g-${w.id})`}/></svg>
-      {w.cover && <img src={src(w.cover)} alt="" loading="lazy" onerror="this.remove()" />}
-    </div>
-    <div class="dlg-body">
-      <header class="dlg-head">
-        <h2 id={`case-${w.id}-t`}>{w.title}</h2>
-        <p>{w.summary}</p>
-        <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
-      </header>
-      <div class="dlg-grid">
-        <aside class="dlg-side">
-          <dl class="facts">
-            <div><dt><Icon name="briefcase" size={16} />{t.ui.client}</dt><dd>{w.client}</dd></div>
-            <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
-            <div><dt><Icon name="clock" size={16} />{t.ui.duration}</dt><dd>{w.duration}</dd></div>
-            <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
-            {w.tools?.length > 0 && <div><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
-          </dl>
-          {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
-        </aside>
-        <div class="dlg-main">
-          <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p>{w.overview}</p></section>
-          <section class="blk"><h3><span class="tile sm"><Icon name="flag" size={18} /></span>{t.ui.challenge}</h3><p>{w.challenge}</p></section>
-          <section class="blk"><h3><span class="tile sm"><Icon name="target" size={18} /></span>{t.ui.goals}</h3>
-            <ul class="goals">{w.goals.map((g) => <li><Icon name="check" size={18} />{g}</li>)}</ul></section>
-          <section class="blk"><h3><span class="tile sm"><Icon name="pen" size={18} /></span>{t.ui.myRole}</h3><p>{w.role}</p></section>
-          <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.process}</h3>
-            <ol class="mini-steps">{w.process.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span>{p.text}</span></div></li>)}</ol></section>
-          <section class="blk"><h3><span class="tile sm"><Icon name="layers" size={18} /></span>{t.ui.solution}</h3><p>{w.solution}</p></section>
-          {w.results?.length > 0 && <section class="blk"><h3><span class="tile sm"><Icon name="trend" size={18} /></span>{t.ui.results}</h3>
-            <ul class="kpis">{w.results.map((r) => <li><b>{r.value}</b><span>{r.label}</span></li>)}</ul></section>}
-          <section class="blk"><h3><span class="tile sm"><Icon name="image" size={18} /></span>{t.ui.gallery}</h3>
-            <ul class="gallery">
-              {w.gallery?.length > 0
-                ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" /></li>)
-                : [1, 2, 3].map(() => <li class="ph" aria-hidden="true"><Icon name="image" size={28} /><span>{t.ui.shot}</span></li>)}
-            </ul></section>
-          {w.testimonial && <figure class="quote"><Icon name="quote" size={28} /><blockquote>{w.testimonial.quote}</blockquote><figcaption><b>{w.testimonial.author}</b> · {w.testimonial.title}</figcaption></figure>}
+  <dialog class="menu-dlg" id="menu" aria-label={t.ui.menuTitle}>
+    <div class="menu-in">
+      <div class="menu-top">
+        <a class="brand" href="#top" data-nav><span class="logo" aria-hidden="true"></span><span class="bname">{t.name}</span></a>
+        <button class="x" type="button" data-close aria-label={t.ui.menuClose}><Icon name="x" size={20} /></button>
+      </div>
+      <nav aria-label={t.ui.menuTitle}>
+        <ol class="menu-nav">
+          {ids.map((id, i) => (
+            <li style={`--k:${i}`}><a href={`#${id}`} data-nav><span class="mn" aria-hidden="true">{fmt(i + 1)}</span><span class="tile sm"><Icon name={navIcons[id]} size={18} /></span><span class="ml">{t.ui.nav[id]}</span><Icon name="arrow" size={18} class="mar" /></a></li>
+          ))}
+        </ol>
+      </nav>
+      <div class="menu-set">
+        <div class="set-row">
+          <span class="set-l"><Icon name="globe" size={18} />{t.ui.langLabel}</span>
+          <nav class="lang" dir="ltr" aria-label={t.ui.langLabel} data-active={lang}>
+            <a href={urls.en} lang="en" hreflang="en" aria-current={lang === 'en' ? 'true' : undefined} aria-label="English">EN</a>
+            <a href={urls.fa} lang="fa" hreflang="fa" aria-current={lang === 'fa' ? 'true' : undefined} aria-label="فارسی">FA</a>
+          </nav>
         </div>
+        <div class="set-row">
+          <span class="set-l" id="theme-l"><Icon name="moon" size={18} />{t.ui.themeLabel}</span>
+          <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="theme-l" data-theme-toggle>
+            <span class="knob"><Icon name="sun" size={14} class="k-sun" /><Icon name="moon" size={14} class="k-moon" /></span>
+          </button>
+        </div>
+      </div>
+      <div class="menu-cta">
+        <a class="btn primary" href={`mailto:${t.email}`}><Icon name="mail" size={18} />{t.ui.ctaMail}</a>
       </div>
     </div>
   </dialog>
-))}
+
+  {discs.map((d) => (
+    <dialog class="case-dlg skill-dlg" id={`skill-${d.id}`} aria-labelledby={`skill-${d.id}-t`} style={`--c:${d.color}`}>
+      <div class="dlg-bar">
+        <div class="dlg-id"><span class="tile sm"><Icon name={d.icon} size={18} /></span><span>{d.name}</span></div>
+        <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
+      </div>
+      <div class="cover" aria-hidden="true">
+        <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`gs-${d.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#gs-${d.id})`}/></svg>
+        <span class="cover-ic"><Icon name={d.icon} size={56} /></span>
+      </div>
+      <div class="dlg-body">
+        <header class="dlg-head">
+          <h2 id={`skill-${d.id}-t`}>{d.name}</h2>
+          <p set:html={rich(d.summary)} />
+        </header>
+        <div class="dlg-grid">
+          <aside class="dlg-side">
+            <dl class="facts">
+              <div><dt><Icon name="tools" size={16} />{t.ui.toolkit}</dt><dd><ul class="chips sm">{d.detail.tools.map((x) => <li>{x}</li>)}</ul></dd></div>
+            </dl>
+            {d.detail.related.length > 0 && (
+              <div class="rel">
+                <h3><Icon name="briefcase" size={16} />{t.ui.related}</h3>
+                <ul>
+                  {d.detail.related.map((rid) => {
+                    const w = works.find((x) => x.id === rid);
+                    return w && <li><button type="button" class="rel-btn" data-open={`case-${w.id}`} aria-haspopup="dialog"><Logo w={w} size="sm" /><span>{w.title}</span><Icon name="arrow" size={16} /></button></li>;
+                  })}
+                </ul>
+              </div>
+            )}
+            <a class="btn primary wide" href={`mailto:${t.email}?subject=${encodeURIComponent(d.name)}`}><Icon name="mail" size={18} /><span>{t.ui.talk}</span></a>
+          </aside>
+          <div class="dlg-main">
+            <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(d.detail.overview)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="check" size={18} /></span>{t.ui.deliver}</h3>
+              <ul class="goals">{d.detail.deliverables.map((x) => <li><Icon name="check" size={18} /><span set:html={rich(x)} /></li>)}</ul></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.approach}</h3>
+              <ol class="mini-steps">{d.detail.approach.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span>{p.text}</span></div></li>)}</ol></section>
+            <section class="blk ai-box"><h3><span class="tile sm"><Icon name="spark" size={18} /></span>{d.detail.ai.title}</h3>
+              <p set:html={rich(d.detail.ai.text)} />
+              <ul class="ai-points">{d.detail.ai.points.map((x) => <li><Icon name="spark" size={14} />{x}</li>)}</ul></section>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  ))}
+
+  {works.map((w) => (
+    <dialog class="case-dlg" id={`case-${w.id}`} aria-labelledby={`case-${w.id}-t`} style={`--c:${w.color}`}>
+      <div class="dlg-bar">
+        <div class="dlg-id"><Logo w={w} size="sm" /><span>{w.client}</span></div>
+        <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
+      </div>
+      <div class="cover" aria-hidden="true">
+        <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`g-${w.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#g-${w.id})`}/></svg>
+        {w.cover && <img src={src(w.cover)} alt="" loading="lazy" onerror="this.remove()" />}
+      </div>
+      <div class="dlg-body">
+        <header class="dlg-head">
+          <h2 id={`case-${w.id}-t`}>{w.title}</h2>
+          <p set:html={rich(w.summary)} />
+          <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
+        </header>
+        <div class="dlg-grid">
+          <aside class="dlg-side">
+            <dl class="facts">
+              <div><dt><Icon name="briefcase" size={16} />{t.ui.client}</dt><dd>{w.client}</dd></div>
+              <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
+              <div><dt><Icon name="clock" size={16} />{t.ui.duration}</dt><dd>{w.duration}</dd></div>
+              <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
+              {w.tools?.length > 0 && <div><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
+            </dl>
+            {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
+          </aside>
+          <div class="dlg-main">
+            <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(w.overview)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="flag" size={18} /></span>{t.ui.challenge}</h3><p set:html={rich(w.challenge)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="target" size={18} /></span>{t.ui.goals}</h3>
+              <ul class="goals">{w.goals.map((g) => <li><Icon name="check" size={18} /><span set:html={rich(g)} /></li>)}</ul></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="pen" size={18} /></span>{t.ui.myRole}</h3><p set:html={rich(w.role)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.process}</h3>
+              <ol class="mini-steps">{w.process.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span set:html={rich(p.text)} /></div></li>)}</ol></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="layers" size={18} /></span>{t.ui.solution}</h3><p set:html={rich(w.solution)} /></section>
+            {w.results?.length > 0 && <section class="blk"><h3><span class="tile sm"><Icon name="trend" size={18} /></span>{t.ui.results}</h3>
+              <ul class="kpis">{w.results.map((r) => <li><b>{r.value}</b><span>{r.label}</span></li>)}</ul></section>}
+            <section class="blk"><h3><span class="tile sm"><Icon name="image" size={18} /></span>{t.ui.gallery}</h3>
+              <ul class="gallery">
+                {w.gallery?.length > 0
+                  ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" /></li>)
+                  : [1, 2, 3].map(() => <li class="ph" aria-hidden="true"><Icon name="image" size={28} /><span>{t.ui.shot}</span></li>)}
+              </ul></section>
+            {w.testimonial && <figure class="quote"><Icon name="quote" size={28} /><blockquote>{w.testimonial.quote}</blockquote><figcaption><b>{w.testimonial.author}</b> · {w.testimonial.title}</figcaption></figure>}
+          </div>
+        </div>
+      </div>
+    </dialog>
+  ))}
+
+  <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
+</Base>
 
 <script>
   const root = document.documentElement;
-  const bar = document.querySelector('.bar');
-  const prog = document.querySelector('.progress');
-  const links = [...document.querySelectorAll('.dots a')];
-  const byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
-  const setActive = (a) => {
-    links.forEach((l) => l.removeAttribute('aria-current'));
-    a && a.setAttribute('aria-current', 'true');
-  };
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- scroll progress, header state, section activation ---------- */
+  const bar = $('.bar');
+  const prog = $('.progress');
+  const dots = $$('.dots a');
+  const menuLinks = $$('.menu-nav a');
+  const sections = $$('[data-section]');
+  const steps = $('[data-steps]');
+  const stepItems = steps ? $$('li', steps) : [];
+
+  function activate(id) {
+    dots.forEach((a) => (a.getAttribute('href') === '#' + id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+    menuLinks.forEach((a) => (a.getAttribute('href') === '#' + id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+    sections.forEach((s) => s.classList.toggle('is-active', s.id === id));
+  }
+
+  function stepProgress() {
+    if (!steps) return;
+    const r = steps.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const p = Math.min(1, Math.max(0, (vh * 0.82 - r.top) / (r.height + vh * 0.3)));
+    steps.style.setProperty('--p', p.toFixed(3));
+    stepItems.forEach((li, i) => li.classList.toggle('done', p > 0.02 && p * 4 >= i - 0.001));
+  }
 
   let queued = false;
   function onScroll() {
@@ -237,35 +347,98 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
       const max = root.scrollHeight - window.innerHeight;
       prog.style.setProperty('--p', String(max > 0 ? Math.min(y / max, 1) : 0));
       bar.classList.toggle('scrolled', y > 8);
-      if (max > 0 && max - y < 4) setActive(links[links.length - 1]);
+      if (max > 0 && max - y < 4) activate(sections[sections.length - 1].id);
+      stepProgress();
       queued = false;
     });
   }
   addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
   onScroll();
 
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach((e) => e.isIntersecting && setActive(byId.get(e.target.id))),
+  const secIO = new IntersectionObserver(
+    (es) => es.forEach((e) => e.isIntersecting && activate(e.target.id)),
     { rootMargin: '-45% 0px -50% 0px' }
   );
-  document.querySelectorAll('[data-section]').forEach((s) => io.observe(s));
+  sections.forEach((s) => secIO.observe(s));
 
-  const steps = document.querySelector('.steps');
-  if (steps) {
-    const so = new IntersectionObserver((es) => {
-      if (es[0].isIntersecting) { steps.classList.add('in'); so.disconnect(); }
-    }, { threshold: 0.35 });
-    so.observe(steps);
+  /* ---------- repeating reveal animations ---------- */
+  const revealIO = new IntersectionObserver(
+    (es) => es.forEach((e) => e.target.classList.toggle('in', e.isIntersecting)),
+    { rootMargin: '0px 0px -8% 0px' }
+  );
+  $$('[data-reveal], [data-stagger]').forEach((el) => revealIO.observe(el));
+  const hero = $('#top');
+  new IntersectionObserver((es) => es.forEach((e) => hero.classList.toggle('run', e.isIntersecting)), { threshold: 0 }).observe(hero);
+
+  /* ---------- modal manager (dialogs + history so Back closes them) ---------- */
+  let openDlg = null;
+  const menuBtns = $$('[data-open="menu"]');
+  function syncMenuBtn(open) { menuBtns.forEach((b) => b.setAttribute('aria-expanded', String(open))); }
+  function openModal(id) {
+    const d = document.getElementById(id);
+    if (!d) return;
+    let replace = false;
+    if (openDlg && openDlg !== d) { const prev = openDlg; openDlg = null; prev.close(); replace = true; }
+    d.showModal();
+    d.scrollTop = 0;
+    openDlg = d;
+    if (d.id === 'menu') {
+      const cur = dots.find((a) => a.getAttribute('aria-current') === 'true');
+      if (cur) activate(cur.getAttribute('href').slice(1));
+      syncMenuBtn(true);
+    }
+    const st = { modal: id };
+    replace ? history.replaceState(st, '') : history.pushState(st, '');
   }
+  function closeSilently(d) { if (openDlg === d) openDlg = null; d.close(); }
+  $$('[data-open]').forEach((b) => b.addEventListener('click', () => openModal(b.dataset.open)));
+  $$('dialog').forEach((d) => {
+    $('[data-close]', d)?.addEventListener('click', () => d.close());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    d.addEventListener('close', () => {
+      if (d.id === 'menu') syncMenuBtn(false);
+      if (openDlg === d) {
+        openDlg = null;
+        if (history.state && history.state.modal) history.back();
+      }
+    });
+  });
+  addEventListener('popstate', () => { if (openDlg) { const d = openDlg; openDlg = null; d.close(); } });
 
-  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+  // menu links: close the menu, then scroll to the section and move focus there
+  $$('[data-nav]').forEach((a) => a.addEventListener('click', (e) => {
+    const hash = a.getAttribute('href');
+    const target = hash && document.querySelector(hash);
+    if (!target) return;
+    e.preventDefault();
+    closeSilently($('#menu'));
+    history.replaceState(null, '', hash);
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      target.focus({ preventScroll: true });
+    });
+  }));
+
+  /* ---------- theme switch ---------- */
+  const sw = $('[data-theme-toggle]');
+  const syncSwitch = () => sw && sw.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
+  syncSwitch();
+  sw?.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
     try { localStorage.setItem('theme', next); } catch {}
+    syncSwitch();
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    let stored = null;
+    try { stored = localStorage.getItem('theme'); } catch {}
+    if (!stored) { root.dataset.theme = e.matches ? 'dark' : 'light'; syncSwitch(); }
   });
 
-  document.querySelectorAll('[data-copy]').forEach((b) => {
-    const label = b.querySelector('.txt');
+  /* ---------- copy email ---------- */
+  $$('[data-copy]').forEach((b) => {
+    const label = $('.txt', b);
     const original = label.textContent;
     b.addEventListener('click', async () => {
       const v = b.dataset.copy;
@@ -281,31 +454,5 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
       clearTimeout(b._t);
       b._t = setTimeout(() => { b.classList.remove('done'); label.textContent = original; }, 1800);
     });
-  });
-  // case study dialogs
-  const dialogs = [...document.querySelectorAll('dialog.case-dlg')];
-  let openDlg = null;
-  document.querySelectorAll('[data-open]').forEach((b) => {
-    b.addEventListener('click', () => {
-      const d = document.getElementById('case-' + b.dataset.open);
-      if (!d) return;
-      d.showModal();
-      d.scrollTop = 0;
-      openDlg = d;
-      history.pushState({ case: b.dataset.open }, '');
-    });
-  });
-  dialogs.forEach((d) => {
-    d.querySelector('[data-close]')?.addEventListener('click', () => d.close());
-    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
-    d.addEventListener('close', () => {
-      if (openDlg === d) {
-        openDlg = null;
-        if (history.state && history.state.case) history.back();
-      }
-    });
-  });
-  addEventListener('popstate', () => {
-    if (openDlg) { const d = openDlg; openDlg = null; d.close(); }
   });
 </script>
