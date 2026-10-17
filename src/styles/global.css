@@ -34,6 +34,8 @@ p strong, li strong, .lead strong { color: var(--ink); }
 .skip:focus { inset-inline-start: 8px; }
 .wrap { max-width: 1040px; margin-inline: auto; padding-inline: 20px 44px; }
 @media (min-width: 1180px) { .wrap { padding-inline: 24px; } }
+.wrap.bar-in, .wrap.foot { padding-inline: 20px; }
+@media (min-width: 1180px) { .wrap.bar-in, .wrap.foot { padding-inline: 24px; } }
 .ic { flex: none; }
 
 /* ============ progress + header ============ */
@@ -273,10 +275,10 @@ h2 { margin: 0; font: 700 clamp(1.7rem, 5vw, 2.5rem)/1.2 var(--display); letter-
 .logo-tile.sm img { padding: 4px; }
 
 /* ============ dialogs (case + skill) ============ */
-.case-dlg { width: min(940px, 100%); max-width: 100%; max-height: min(92vh, 100%); max-height: min(92dvh, 100%); margin: auto; padding: 0; border: 0; border-radius: 22px; background: var(--paper); color: var(--ink); overflow: auto; overscroll-behavior: contain; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .5); }
+.case-dlg { width: min(940px, calc(100% - 24px)); max-width: none; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); margin: auto; padding: 0; border: 0; border-radius: 22px; background: var(--paper); color: var(--ink); overflow: auto; overscroll-behavior: contain; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .5); }
 .case-dlg[open] { animation: dlg-in .4s var(--ease); }
 @keyframes dlg-in { from { opacity: 0; transform: translateY(28px) scale(.98); } }
-@media (max-width: 700px) { .case-dlg { width: 100%; height: 100vh; height: 100dvh; max-height: 100dvh; border-radius: 0; } }
+@media (min-width: 700px) { .case-dlg { width: min(940px, calc(100% - 64px)); max-height: calc(100vh - 64px); max-height: calc(100dvh - 64px); } }
 .dlg-bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .dlg-id { display: flex; align-items: center; gap: 10px; min-width: 0; font-weight: 500; }
 .dlg-id span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -412,3 +414,27 @@ footer { padding: 28px 0 48px; border-top: 1px solid var(--line); color: var(--m
 .branch.ai .leaves li::before, .branch.ai .leaves li::after { background: color-mix(in srgb, var(--c) 55%, var(--line)); }
 @media (hover: hover) { .leaves li:hover::after { width: 18px; background: var(--c); } }
 @media (prefers-reduced-motion: reduce) { .js .branches:not(.in)::before { transform: none; } }
+
+/* ============ v5: floating menu on phones, tap labels, section icon loops ============ */
+@media (max-width: 700px) {
+  .menu-dlg { inset-block: 12px; height: calc(100vh - 24px); height: calc(100dvh - 24px); width: calc(100% - 24px); margin-inline-end: 12px; border-radius: 22px; }
+}
+.dots a.tip .lab { opacity: 1; transform: none; }
+
+.tile { border: 1px solid transparent; transition: border-color .4s, box-shadow .5s; }
+.sh .tile { width: 56px; height: 56px; border-radius: 16px; }
+.sh .tile .ic { width: 28px; height: 28px; }
+@keyframes sweep-loop {
+  0% { opacity: 1; background-position: 160% 0; }
+  26% { opacity: 1; background-position: -60% 0; }
+  27%, 100% { opacity: 0; background-position: -60% 0; }
+}
+@keyframes ring-loop {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c, var(--accent)) 45%, transparent), 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
+  36%, 100% { box-shadow: 0 0 0 18px transparent, 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
+}
+.is-active .sh .tile { border-color: color-mix(in srgb, var(--c, var(--accent)) 60%, transparent); box-shadow: 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); animation: ring-loop 5s ease-out .1s infinite; }
+.is-active .sh .tile::after { --shine: rgba(255, 255, 255, .9); animation: sweep-loop 5s var(--ease) .2s infinite; }
+.is-active .tile.sub { border-color: color-mix(in srgb, var(--c, var(--accent)) 35%, transparent); }
+.is-active .tile.sub::after { --shine: rgba(255, 255, 255, .5); animation: sweep-loop 5s var(--ease) calc(.5s + var(--k, 0) * 140ms) infinite; }
+.rel-btn .logo-tile { flex: none; }

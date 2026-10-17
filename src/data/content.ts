@@ -1,13 +1,15 @@
 // All site text lives here, in English (en) and Persian (fa). Items marked TODO are placeholders.
 // Wrap text in **double asterisks** to make it bold.
-const links = [
+import type { Lang, Link, Locale, WorkShared } from './types';
+
+const links: Link[] = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/your-handle' }, // TODO
   { label: 'GitHub', href: 'https://github.com/your-handle' }, // TODO
   { label: 'Dribbble', href: 'https://dribbble.com/your-handle' }, // TODO
 ];
 const email = 'hello@example.com'; // TODO
 
-export const content = {
+export const content: Record<Lang, Locale> = {
   /* ============================== ENGLISH ============================== */
   en: {
     name: 'Your Name', // TODO
@@ -660,7 +662,7 @@ export const content = {
 };
 
 // Images and links shared by both languages. Paths are relative to /public (or use full https:// URLs).
-export const workShared = {
+export const workShared: Record<string, WorkShared> = {
   'store-redesign': { logo: '', cover: '', color: '#2447f5', url: '', gallery: [] },
   'custom-checkout': { logo: '', cover: '', color: '#6d33e0', url: '', gallery: [] },
   'content-strategy': { logo: '', cover: '', color: '#0b8a7b', url: '', gallery: [] },

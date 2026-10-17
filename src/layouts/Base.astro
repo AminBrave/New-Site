@@ -1,8 +1,19 @@
 ---
 import '../styles/global.css';
+import type { Lang } from '../data/types';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  urls: Record<Lang, string>;
+  name: string;
+  jobTitle: string;
+}
+
 const { lang, title, description, urls, name, jobTitle } = Astro.props;
 const dir = lang === 'fa' ? 'rtl' : 'ltr';
-const abs = (p) => (Astro.site ? new URL(p, Astro.site).href : null);
+const abs = (path: string): string | null => (Astro.site ? new URL(path, Astro.site).href : null);
 const canonical = abs(urls[lang]);
 const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle, inLanguage: lang, ...(canonical ? { url: canonical } : {}) };
 ---
