@@ -19,3 +19,8 @@ Run `npm run build` (without ASTRO_BASE set), then upload the contents of `dist/
 
 ## Before publishing
 Replace every `TODO` in `src/data/content.js`: name, email, links, projects, experience, and resume file.
+
+## Case studies and images
+Each project in `src/data/content.js` (`work`, per language) has fields for overview, challenge, goals, process,
+solution, results, tools, and a testimonial. Fields left empty are hidden. Images and links shared by both
+languages live in `workShared` (logo, cover, gallery, url). Put image files in `public/images/projects/`.

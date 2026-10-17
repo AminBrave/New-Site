@@ -1,0 +1,11 @@
+---
+const { w, size = 'md' } = Astro.props;
+const root = import.meta.env.BASE_URL.replace(/\/$/, '');
+const src = (p) => (!p ? '' : /^(https?:)?\/\//.test(p) ? p : `${root}/${p.replace(/^\//, '')}`);
+const label = w.client || w.title;
+const initials = label.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => [...s][0]).join('');
+---
+<span class={`logo-tile ${size}`} style={`--c:${w.color}`}>
+  <span class="mono" aria-hidden="true">{initials}</span>
+  {w.logo && <img src={src(w.logo)} alt="" loading="lazy" onerror="this.remove()" />}
+</span>

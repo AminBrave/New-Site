@@ -1,12 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
-import { content } from '../data/content.js';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { content, workShared } from '../data/content.js';
 const { lang } = Astro.props;
 const t = content[lang];
 const root = import.meta.env.BASE_URL.replace(/\/$/, '');
 const urls = { en: `${root}/`, fa: `${root}/fa/` };
 const fmt = (n) => n.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US');
 const resume = t.resumeUrl ? `${root}/${t.resumeUrl}` : '';
+const works = t.work.map((w) => ({ ...w, ...workShared[w.id] }));
+const src = (p) => (!p ? '' : /^(https?:)?\/\//.test(p) ? p : `${root}/${p.replace(/^\//, '')}`);
+const navIcons = { top: 'home', skills: 'layers', process: 'route', work: 'briefcase', resume: 'file', contact: 'mail' };
+const discIcons = { ux: 'ux', woo: 'cart', content: 'content' };
+const stepIcons = ['search', 'target', 'pen', 'code', 'trend'];
 const ids = ['top', 'skills', 'process', 'work', 'resume', 'contact'];
 const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -34,81 +41,113 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
   <nav class="dots" aria-label={t.ui.sections}>
     <ol>
       {ids.map((id, i) => (
-        <li><a href={`#${id}`} aria-current={i === 0 ? 'true' : undefined}><span class="lab">{t.ui.nav[id]}</span><span class="pip"></span></a></li>
+        <li><a href={`#${id}`} aria-current={i === 0 ? 'true' : undefined}><span class="lab"><Icon name={navIcons[id]} size={14} />{t.ui.nav[id]}</span><span class="pip"></span></a></li>
       ))}
     </ol>
   </nav>
 
   <main id="main">
     <section class="hero" id="top" data-section>
-      <div class="wrap">
-        <h1>
-          {t.hero.map((p, i) => (
-            <Fragment><span class:list={['w', { mark: p.mark }]} style={`--i:${i}`}>{p.t}</span>{' '}</Fragment>
-          ))}
-        </h1>
-        <p class="lead">{t.intro}</p>
-        <ul class="roles">
-          {t.roles.map((r) => <li><a href={r.href}>{r.label}</a></li>)}
-        </ul>
-        <div class="btns">
-          <a class="btn primary" href="#work"><span>{t.ui.ctaWork}</span><span class="arr" set:html={arrow} /></a>
-          <a class="btn" href={`mailto:${t.email}`}>{t.ui.ctaMail}</a>
+      <div class="wrap hero-grid">
+        <div class="hero-text">
+          <h1>
+            {t.hero.map((p, i) => (
+              <Fragment><span class:list={['w', { mark: p.mark }]} style={`--i:${i}`}>{p.t}</span>{' '}</Fragment>
+            ))}
+          </h1>
+          <p class="lead">{t.intro}</p>
+          <ul class="roles">
+            {t.roles.map((r, i) => <li><a href={r.href} class={`r-${['ux', 'woo', 'content'][i]}`}><Icon name={['ux', 'cart', 'content'][i]} size={18} />{r.label}</a></li>)}
+          </ul>
+          <div class="btns">
+            <a class="btn primary" href="#work"><span>{t.ui.ctaWork}</span><span class="arr" set:html={arrow} /></a>
+            <a class="btn" href={`mailto:${t.email}`}><Icon name="mail" size={18} />{t.ui.ctaMail}</a>
+          </div>
         </div>
+        <svg class="art" viewBox="0 0 420 360" aria-hidden="true" focusable="false">
+          <g transform="translate(8 10)"><g class="card" style="--i:0">
+            <rect class="surf" x="0" y="0" width="240" height="172" rx="16"/>
+            <circle cx="20" cy="18" r="4" class="dim"/><circle cx="34" cy="18" r="4" class="dim"/><circle cx="48" cy="18" r="4" class="dim"/>
+            <rect x="16" y="38" width="100" height="70" rx="8" class="tint"/>
+            <path d="M16 38l100 70M116 38L16 108" class="wire"/>
+            <rect x="132" y="42" width="90" height="8" rx="4" class="dim"/><rect x="132" y="58" width="68" height="8" rx="4" class="dim"/><rect x="132" y="74" width="80" height="8" rx="4" class="dim"/>
+            <rect x="132" y="92" width="58" height="18" rx="9" class="acc"/>
+            <rect x="16" y="124" width="64" height="34" rx="8" class="wire-box"/><rect x="88" y="124" width="64" height="34" rx="8" class="wire-box"/><rect x="160" y="124" width="64" height="34" rx="8" class="wire-box"/>
+            <path d="M240 24l16-10M240 24l14 14" class="wire"/><circle cx="240" cy="24" r="5" class="acc"/><rect x="252" y="8" width="9" height="9" class="surf wire-box"/>
+          </g></g>
+          <g transform="translate(150 96)"><g class="card" style="--i:1">
+            <rect class="panel" x="0" y="0" width="250" height="168" rx="16"/>
+            <path d="M26 34l-12 10 12 10M62 34l12 10-12 10M48 28l-8 32" class="code-line"/>
+            <rect x="96" y="30" width="60" height="7" rx="3.5" class="c-a"/><rect x="164" y="30" width="44" height="7" rx="3.5" class="c-b"/>
+            <rect x="96" y="46" width="30" height="7" rx="3.5" class="c-b"/><rect x="134" y="46" width="80" height="7" rx="3.5" class="c-c"/>
+            <rect x="28" y="76" width="70" height="7" rx="3.5" class="c-c"/><rect x="106" y="76" width="52" height="7" rx="3.5" class="c-a"/>
+            <rect x="44" y="92" width="96" height="7" rx="3.5" class="c-b"/><rect x="148" y="92" width="40" height="7" rx="3.5" class="c-c"/>
+            <rect x="28" y="108" width="54" height="7" rx="3.5" class="c-a"/>
+            <circle cx="214" cy="132" r="22" class="acc"/>
+            <g transform="translate(202 120)" class="cart-ic"><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/><path d="M1 3h3l2.2 11h11l1.8-7H5"/></g>
+          </g></g>
+          <g transform="translate(34 204)"><g class="card" style="--i:2">
+            <rect class="surf" x="0" y="0" width="214" height="126" rx="16"/>
+            <rect x="18" y="26" width="76" height="9" rx="4.5" class="hl"/><rect x="18" y="18" width="128" height="12" rx="6" class="ink"/>
+            <rect x="18" y="46" width="176" height="7" rx="3.5" class="dim"/><rect x="18" y="60" width="150" height="7" rx="3.5" class="dim"/><rect x="18" y="74" width="112" height="7" rx="3.5" class="dim"/>
+            <rect x="18" y="96" width="46" height="16" rx="8" class="tint"/><rect x="72" y="96" width="56" height="16" rx="8" class="tint"/>
+            <path d="M176 100l6-12h-6v-8h12v8l-6 12z" class="acc"/>
+          </g></g>
+        </svg>
       </div>
     </section>
 
     <section id="skills" data-section><div class="wrap">
-      <h2>{t.skillsHead}</h2>
+      <div class="sh"><span class="tile"><Icon name="layers" size={24} /></span><h2>{t.skillsHead}</h2></div>
       <p class="sub">{t.title}.</p>
       {t.disciplines.map((d) => (
-        <article class="disc" id={d.id}>
-          <div><h3>{d.name}</h3><p>{d.summary}</p></div>
+        <article class={`disc d-${d.id}`} id={d.id}>
+          <div><span class="tile lg"><Icon name={discIcons[d.id]} size={28} /></span><h3>{d.name}</h3><p>{d.summary}</p></div>
           <ul class="chips">{d.skills.map((s) => <li>{s}</li>)}</ul>
         </article>
       ))}
     </div></section>
 
     <section id="process" data-section><div class="wrap">
-      <h2>{t.processHead}</h2>
+      <div class="sh"><span class="tile"><Icon name="route" size={24} /></span><h2>{t.processHead}</h2></div>
       <p class="sub">{t.processSub}</p>
       <ol class="steps">
         {t.process.map((p, i) => (
-          <li style={`--i:${i}`}><span class="num" aria-hidden="true">{fmt(i + 1)}</span><strong>{p.step}</strong><span class="txt">{p.text}</span></li>
+          <li style={`--i:${i}`}><span class="num" aria-hidden="true"><span class="tile sm"><Icon name={stepIcons[i]} size={18} /></span>{fmt(i + 1)}</span><strong>{p.step}</strong><span class="txt">{p.text}</span></li>
         ))}
       </ol>
     </div></section>
 
     <section id="work" data-section><div class="wrap">
-      <h2>{t.workHead}</h2>
+      <div class="sh"><span class="tile"><Icon name="briefcase" size={24} /></span><h2>{t.workHead}</h2></div>
       <p class="sub">{t.workSub}</p>
-      {t.work.map((w) => (
-        <article class="case">
-          <div>
-            <h3>{w.href ? <a href={w.href}>{w.title}</a> : w.title}</h3>
+      <div class="cases">
+        {works.map((w) => (
+          <article class="case" style={`--c:${w.color}`}>
+            <div class="case-head">
+              <Logo w={w} />
+              <div><h3>{w.title}</h3><p class="client">{w.client} · {w.year}</p></div>
+            </div>
             <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
-          </div>
-          <dl>
-            <dt>{t.ui.problem}</dt><dd>{w.problem}</dd>
-            <dt>{t.ui.role}</dt><dd>{w.role}</dd>
-            <dt>{t.ui.result}</dt><dd>{w.outcome}</dd>
-          </dl>
-        </article>
-      ))}
+            <p class="case-sum">{w.summary}</p>
+            <button class="open" type="button" data-open={w.id} aria-haspopup="dialog"><span>{t.ui.viewCase}</span><Icon name="arrow" size={18} /><span class="sr"> — {w.title}</span></button>
+          </article>
+        ))}
+      </div>
     </div></section>
 
     <section id="resume" data-section><div class="wrap">
-      <h2>{t.resumeHead}</h2>
+      <div class="sh"><span class="tile"><Icon name="file" size={24} /></span><h2>{t.resumeHead}</h2></div>
       <ul class="xp">
         {t.experience.map((e) => (
-          <li><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
+          <li><span class="dot"><Icon name="briefcase" size={14} /></span><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
         ))}
       </ul>
-      {resume && <p><a class="btn" href={resume}>{t.ui.download}</a></p>}
+      {resume && <p><a class="btn" href={resume}><Icon name="file" size={18} />{t.ui.download}</a></p>}
     </div></section>
 
     <section id="contact" class="contact" data-section><div class="wrap">
-      <h2>{t.contactHead}</h2>
+      <div class="sh"><span class="tile"><Icon name="mail" size={24} /></span><h2>{t.contactHead}</h2></div>
       <p class="sub">{t.contactSub}</p>
       <div class="mailrow">
         <a class="mail" dir="ltr" href={`mailto:${t.email}`}>{t.email}</a>
@@ -119,13 +158,64 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
         </button>
       </div>
       <ul class="links">
-        {t.links.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}
+        {t.links.map((l) => <li><a href={l.href} rel="noopener">{l.label}<Icon name="external" size={15} /></a></li>)}
       </ul>
     </div></section>
   </main>
 
-  <footer><div class="wrap">© {year} {t.name}</div></footer>
+  <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
 </Base>
+
+{works.map((w) => (
+  <dialog class="case-dlg" id={`case-${w.id}`} aria-labelledby={`case-${w.id}-t`} style={`--c:${w.color}`}>
+    <div class="dlg-bar">
+      <div class="dlg-id"><Logo w={w} size="sm" /><span>{w.client}</span></div>
+      <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
+    </div>
+    <div class="cover" aria-hidden="true">
+      <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`g-${w.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#g-${w.id})`}/></svg>
+      {w.cover && <img src={src(w.cover)} alt="" loading="lazy" onerror="this.remove()" />}
+    </div>
+    <div class="dlg-body">
+      <header class="dlg-head">
+        <h2 id={`case-${w.id}-t`}>{w.title}</h2>
+        <p>{w.summary}</p>
+        <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
+      </header>
+      <div class="dlg-grid">
+        <aside class="dlg-side">
+          <dl class="facts">
+            <div><dt><Icon name="briefcase" size={16} />{t.ui.client}</dt><dd>{w.client}</dd></div>
+            <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
+            <div><dt><Icon name="clock" size={16} />{t.ui.duration}</dt><dd>{w.duration}</dd></div>
+            <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
+            {w.tools?.length > 0 && <div><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
+          </dl>
+          {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
+        </aside>
+        <div class="dlg-main">
+          <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p>{w.overview}</p></section>
+          <section class="blk"><h3><span class="tile sm"><Icon name="flag" size={18} /></span>{t.ui.challenge}</h3><p>{w.challenge}</p></section>
+          <section class="blk"><h3><span class="tile sm"><Icon name="target" size={18} /></span>{t.ui.goals}</h3>
+            <ul class="goals">{w.goals.map((g) => <li><Icon name="check" size={18} />{g}</li>)}</ul></section>
+          <section class="blk"><h3><span class="tile sm"><Icon name="pen" size={18} /></span>{t.ui.myRole}</h3><p>{w.role}</p></section>
+          <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.process}</h3>
+            <ol class="mini-steps">{w.process.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span>{p.text}</span></div></li>)}</ol></section>
+          <section class="blk"><h3><span class="tile sm"><Icon name="layers" size={18} /></span>{t.ui.solution}</h3><p>{w.solution}</p></section>
+          {w.results?.length > 0 && <section class="blk"><h3><span class="tile sm"><Icon name="trend" size={18} /></span>{t.ui.results}</h3>
+            <ul class="kpis">{w.results.map((r) => <li><b>{r.value}</b><span>{r.label}</span></li>)}</ul></section>}
+          <section class="blk"><h3><span class="tile sm"><Icon name="image" size={18} /></span>{t.ui.gallery}</h3>
+            <ul class="gallery">
+              {w.gallery?.length > 0
+                ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" /></li>)
+                : [1, 2, 3].map(() => <li class="ph" aria-hidden="true"><Icon name="image" size={28} /><span>{t.ui.shot}</span></li>)}
+            </ul></section>
+          {w.testimonial && <figure class="quote"><Icon name="quote" size={28} /><blockquote>{w.testimonial.quote}</blockquote><figcaption><b>{w.testimonial.author}</b> · {w.testimonial.title}</figcaption></figure>}
+        </div>
+      </div>
+    </div>
+  </dialog>
+))}
 
 <script>
   const root = document.documentElement;
@@ -191,5 +281,31 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
       clearTimeout(b._t);
       b._t = setTimeout(() => { b.classList.remove('done'); label.textContent = original; }, 1800);
     });
+  });
+  // case study dialogs
+  const dialogs = [...document.querySelectorAll('dialog.case-dlg')];
+  let openDlg = null;
+  document.querySelectorAll('[data-open]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const d = document.getElementById('case-' + b.dataset.open);
+      if (!d) return;
+      d.showModal();
+      d.scrollTop = 0;
+      openDlg = d;
+      history.pushState({ case: b.dataset.open }, '');
+    });
+  });
+  dialogs.forEach((d) => {
+    d.querySelector('[data-close]')?.addEventListener('click', () => d.close());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    d.addEventListener('close', () => {
+      if (openDlg === d) {
+        openDlg = null;
+        if (history.state && history.state.case) history.back();
+      }
+    });
+  });
+  addEventListener('popstate', () => {
+    if (openDlg) { const d = openDlg; openDlg = null; d.close(); }
   });
 </script>
