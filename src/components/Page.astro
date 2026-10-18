@@ -77,9 +77,9 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 </Base>
 
 <script>
-  /* ---------- helpers ---------- */
   import { activateSection, initScrollTracking } from '../scripts/scroll-tracking';
 
+  /* ---------- helpers ---------- */
   function $<T extends HTMLElement = HTMLElement>(selector: string, scope: ParentNode = document): T | null {
     return scope.querySelector<T>(selector);
   }
@@ -102,6 +102,8 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   const root = document.documentElement;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hasObserver = 'IntersectionObserver' in window;
+  const hero = $('#top');
+  const dots = $$<HTMLAnchorElement>('.dots a');
 
   /* ---------- scroll and section tracking ---------- */
   run('scroll tracking', initScrollTracking);
