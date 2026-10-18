@@ -96,7 +96,6 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
     }
   }
   const root = document.documentElement;
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hasObserver = 'IntersectionObserver' in window;
   const hero = $('#top');
   const dots = $$<HTMLAnchorElement>('.dots a');
