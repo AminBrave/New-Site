@@ -1,0 +1,64 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { rich } from '../lib/rich';
+import type { IconName } from '../lib/icons';
+import type { Discipline, Locale, Work, WorkShared } from '../data/types';
+
+interface Props {
+  t: Locale;
+  discs: Array<Discipline & { icon: IconName; color: string }>;
+  works: Array<Work & WorkShared>;
+  fmt: (n: number) => string;
+  src: (path: string) => string;
+}
+
+const { t, discs, works, fmt, src } = Astro.props;
+---
+  {discs.map((d) => (
+    <dialog class="case-dlg skill-dlg" id={`skill-${d.id}`} aria-labelledby={`skill-${d.id}-t`} style={`--c:${d.color}`}>
+      <div class="dlg-bar">
+        <div class="dlg-id"><span class="tile sm"><Icon name={d.icon} size={18} /></span><span>{d.name}</span></div>
+        <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
+      </div>
+      <div class="cover" aria-hidden="true">
+        <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`gs-${d.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#gs-${d.id})`}/></svg>
+        <span class="cover-ic"><Icon name={d.icon} size={56} /></span>
+      </div>
+      <div class="dlg-body">
+        <header class="dlg-head">
+          <h2 id={`skill-${d.id}-t`}>{d.name}</h2>
+          <p set:html={rich(d.summary)} />
+        </header>
+        <div class="dlg-grid">
+          <aside class="dlg-side">
+            <dl class="facts">
+              <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.toolkit}</dt><dd><ul class="chips sm">{d.detail.tools.map((x) => <li>{x}</li>)}</ul></dd></div>
+            </dl>
+            {d.detail.related.length > 0 && (
+              <div class="rel">
+                <h3><Icon name="briefcase" size={16} />{t.ui.related}</h3>
+                <ul>
+                  {d.detail.related.map((rid) => {
+                    const w = works.find((x) => x.id === rid);
+                    return w && <li><button type="button" class="rel-btn" data-open={`case-${w.id}`} aria-haspopup="dialog"><Logo w={w} size="sm" /><span>{w.title}</span><Icon name="arrow" size={16} /></button></li>;
+                  })}
+                </ul>
+              </div>
+            )}
+            <a class="btn primary wide" href={`mailto:${t.email}?subject=${encodeURIComponent(d.name)}`}><Icon name="mail" size={18} /><span>{t.ui.talk}</span></a>
+          </aside>
+          <div class="dlg-main">
+            <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(d.detail.overview)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="check" size={18} /></span>{t.ui.deliver}</h3>
+              <ul class="goals">{d.detail.deliverables.map((x) => <li><Icon name="check" size={18} /><span set:html={rich(x)} /></li>)}</ul></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.approach}</h3>
+              <ol class="mini-steps">{d.detail.approach.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span>{p.text}</span></div></li>)}</ol></section>
+            <section class="blk ai-box"><h3><span class="tile sm"><Icon name="spark" size={18} /></span>{d.detail.ai.title}</h3>
+              <p set:html={rich(d.detail.ai.text)} />
+              <ul class="ai-points">{d.detail.ai.points.map((x) => <li><Icon name="spark" size={14} />{x}</li>)}</ul></section>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  ))}
