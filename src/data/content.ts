@@ -667,3 +667,64 @@ export const workShared: Record<string, WorkShared> = {
   'custom-checkout': { logo: '', cover: '', color: '#6d33e0', url: '', gallery: [] },
   'content-strategy': { logo: '', cover: '', color: '#0b8a7b', url: '', gallery: [] },
 };
+
+// Validate cross-record relationships when Astro imports this module during a build.
+// Placeholder copy is intentionally allowed; this checks structure, not portfolio readiness.
+function validateContentData(): void {
+  const errors: string[] = [];
+  const enWork = content.en.work;
+  const faWork = content.fa.work;
+
+  const idsFor = (items: { id: string }[], label: string): Set<string> => {
+    const ids = new Set<string>();
+    for (const item of items) {
+      if (!item.id.trim()) {
+        errors.push(`${label} contains an empty ID.`);
+        continue;
+      }
+      if (ids.has(item.id)) errors.push(`${label} contains duplicate ID "${item.id}".`);
+      ids.add(item.id);
+    }
+    return ids;
+  };
+
+  const enWorkIds = idsFor(enWork, 'English projects');
+  const faWorkIds = idsFor(faWork, 'Persian projects');
+  const sharedWorkIds = new Set(Object.keys(workShared));
+
+  for (const id of enWorkIds) {
+    if (!faWorkIds.has(id)) errors.push(`Project "${id}" is missing from Persian content.`);
+    if (!sharedWorkIds.has(id)) errors.push(`Project "${id}" has no workShared record.`);
+  }
+  for (const id of faWorkIds) {
+    if (!enWorkIds.has(id)) errors.push(`Project "${id}" is missing from English content.`);
+    if (!sharedWorkIds.has(id)) errors.push(`Project "${id}" has no workShared record.`);
+  }
+  for (const id of sharedWorkIds) {
+    if (!enWorkIds.has(id) || !faWorkIds.has(id)) {
+      errors.push(`workShared contains orphan project ID "${id}".`);
+    }
+  }
+
+  for (const lang of ['en', 'fa'] as const) {
+    const locale = content[lang];
+    const disciplineIds = new Set<string>();
+    for (const discipline of locale.disciplines) {
+      if (disciplineIds.has(discipline.id)) {
+        errors.push(`Locale "${lang}" contains duplicate discipline ID "${discipline.id}".`);
+      }
+      disciplineIds.add(discipline.id);
+      for (const relatedId of discipline.detail.related) {
+        if (!locale.work.some((project) => project.id === relatedId)) {
+          errors.push(`Locale "${lang}", discipline "${discipline.id}" references missing project "${relatedId}".`);
+        }
+      }
+    }
+  }
+
+  if (errors.length) {
+    throw new Error(`[portfolio content] Validation failed:\n- ${errors.join('\n- ')}`);
+  }
+}
+
+validateContentData();
