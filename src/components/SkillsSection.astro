@@ -1,0 +1,38 @@
+---
+import Icon from './Icon.astro';
+import { rich } from '../lib/rich';
+import type { IconName } from '../lib/icons';
+import type { Discipline, Locale } from '../data/types';
+
+interface Props {
+  t: Locale;
+  discs: Array<Discipline & { icon: IconName; color: string }>;
+}
+const { t, discs } = Astro.props;
+---
+    <section id="skills" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="layers" size={24} /></span><h2>{t.skillsHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1">{t.title}.</p>
+      {discs.map((d, k) => (
+        <article class={`disc d-${d.id}`} id={d.id} data-reveal>
+          <div class="disc-main">
+            <span class="tile lg sub" style={`--k:${k}`}><Icon name={d.icon} size={28} /></span>
+            <h3>{d.name}</h3>
+            <p set:html={rich(d.summary)} />
+            <button class="more" type="button" data-open={`skill-${d.id}`} aria-haspopup="dialog"><span>{t.ui.explore}</span><Icon name="arrow" size={18} /><span class="sr"> — {d.name}</span></button>
+          </div>
+          <div class="tree">
+            <ul class="branches" data-stagger>
+              {d.groups.map((g, gi) => (
+                <li class:list={['branch', { ai: g.ai }]} style={`--k:${gi}`}>
+                  <h4 class="b-title"><span class="tile xs sub" style={`--k:${gi}`}><Icon name={g.icon} size={14} /></span>{g.title}</h4>
+                  <ul class="leaves">
+                    {g.items.map((s) => <li set:html={rich(s)} />)}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div></section>

@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+import { rich } from '../lib/rich';
+import type { IconName } from '../lib/icons';
+import type { Locale } from '../data/types';
+
+interface Props {
+  t: Locale;
+  fmt: (n: number) => string;
+}
+const { t, fmt } = Astro.props;
+const stepIcons: IconName[] = ['search', 'target', 'pen', 'code', 'trend'];
+---
+    <section id="process" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="route" size={24} /></span><h2>{t.processHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1" set:html={rich(t.processSub)} />
+      <ol class="steps" data-steps>
+        {t.process.map((p, i) => (
+          <li style={`--i:${i};--d:${i}`} data-reveal>
+            <span class="num" aria-hidden="true"><span class="tile sm sub" style={`--k:${i}`}><Icon name={stepIcons[i]} size={18} /></span></span>
+            <strong><span class="n">{fmt(i + 1)}</span> {p.step}</strong>
+            <span class="txt">{p.text}</span>
+          </li>
+        ))}
+      </ol>
+    </div></section>

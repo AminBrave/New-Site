@@ -1,0 +1,15 @@
+---
+import Icon from './Icon.astro';
+import type { Locale } from '../data/types';
+
+interface Props { t: Locale }
+const { t } = Astro.props;
+---
+    <section id="resume" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="file" size={24} /></span><h2>{t.resumeHead}</h2></div>
+      <ul class="xp">
+        {t.experience.map((e, i) => (
+          <li data-reveal style={`--d:${i};--k:${i}`}><span class="dot"><Icon name="briefcase" size={14} /></span><span class="when">{e.period}</span><span><strong>{e.role}</strong><br />{e.org}</span></li>
+        ))}
+      </ul>
+    </div></section>
