@@ -723,7 +723,7 @@ function validateContentData(): void {
   }
 
   if (errors.length) {
-    throw new Error(`[portfolio content] Validation failed:\\n- ${errors.join('\\n- ')}`);
+    throw new Error(`[portfolio content] Validation failed:\n- ${errors.join('\n- ')}`);
   }
 }
 
