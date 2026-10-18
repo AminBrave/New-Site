@@ -8,13 +8,12 @@ interface Props {
   lang: Lang;
   t: (typeof content)[Lang];
   urls: Record<Lang, string>;
-  otherLang: Lang;
   fmt: (n: number) => string;
   ids: SectionId[];
   navIcons: Record<SectionId, IconName>;
 }
 
-const { lang, t, urls, otherLang, fmt, ids, navIcons } = Astro.props;
+const { lang, t, urls, fmt, ids, navIcons } = Astro.props;
 ---
 
   <nav class="dots" aria-label={t.ui.sections}>
