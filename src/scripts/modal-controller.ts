@@ -14,6 +14,14 @@ export function initModalController(): void {
   };
   const root = document.documentElement;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /** Keep modal initialization isolated from other client-side features. */
+  function run(name: string, init: () => void): void {
+    try {
+      init();
+    } catch (error) {
+      console.warn(`[portfolio] ${name} failed`, error);
+    }
+  }
   const dots = Array.from(document.querySelectorAll<HTMLAnchorElement>('.dots a'));
 
   /* ---------- modals: native <dialog>, with a fallback for browsers without showModal ---------- */
