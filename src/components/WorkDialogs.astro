@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { rich } from '../lib/rich';
+import type { Locale, Work, WorkShared } from '../data/types';
+
+interface Props {
+  t: Locale;
+  works: Array<Work & WorkShared>;
+  fmt: (n: number) => string;
+  src: (path: string) => string;
+}
+
+const { t, works, fmt, src } = Astro.props;
+---
+  {works.map((w) => (
+    <dialog class="case-dlg" id={`case-${w.id}`} aria-labelledby={`case-${w.id}-t`} style={`--c:${w.color}`}>
+      <div class="dlg-bar">
+        <div class="dlg-id"><Logo w={w} size="sm" /><span>{w.client}</span></div>
+        <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
+      </div>
+      <div class="cover" aria-hidden="true">
+        <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`g-${w.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#g-${w.id})`}/></svg>
+        {w.cover && <img src={src(w.cover)} alt="" loading="lazy" decoding="async" onerror="this.remove()" />}
+      </div>
+      <div class="dlg-body">
+        <header class="dlg-head">
+          <h2 id={`case-${w.id}-t`}>{w.title}</h2>
+          <p set:html={rich(w.summary)} />
+          <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
+        </header>
+        <div class="dlg-grid">
+          <aside class="dlg-side">
+            <dl class="facts">
+              <div><dt><Icon name="briefcase" size={16} />{t.ui.client}</dt><dd>{w.client}</dd></div>
+              <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
+              <div><dt><Icon name="clock" size={16} />{t.ui.duration}</dt><dd>{w.duration}</dd></div>
+              <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
+              {w.tools?.length > 0 && <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
+            </dl>
+            {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
+          </aside>
+          <div class="dlg-main">
+            <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(w.overview)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="flag" size={18} /></span>{t.ui.challenge}</h3><p set:html={rich(w.challenge)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="target" size={18} /></span>{t.ui.goals}</h3>
+              <ul class="goals">{w.goals.map((g) => <li><Icon name="check" size={18} /><span set:html={rich(g)} /></li>)}</ul></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="pen" size={18} /></span>{t.ui.myRole}</h3><p set:html={rich(w.role)} /></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.process}</h3>
+              <ol class="mini-steps">{w.process.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span set:html={rich(p.text)} /></div></li>)}</ol></section>
+            <section class="blk"><h3><span class="tile sm"><Icon name="layers" size={18} /></span>{t.ui.solution}</h3><p set:html={rich(w.solution)} /></section>
+            {w.results?.length > 0 && <section class="blk"><h3><span class="tile sm"><Icon name="trend" size={18} /></span>{t.ui.results}</h3>
+              <ul class="kpis">{w.results.map((r) => <li><b>{r.value}</b><span>{r.label}</span></li>)}</ul></section>}
+            <section class="blk"><h3><span class="tile sm"><Icon name="image" size={18} /></span>{t.ui.gallery}</h3>
+              <ul class="gallery">
+                {w.gallery?.length > 0
+                  ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" decoding="async" /></li>)
+                  : [1, 2, 3].map(() => <li class="ph" aria-hidden="true"><Icon name="image" size={28} /><span>{t.ui.shot}</span></li>)}
+              </ul></section>
+            {w.testimonial && <figure class="quote"><Icon name="quote" size={28} /><blockquote>{w.testimonial.quote}</blockquote><figcaption><b>{w.testimonial.author}</b> · {w.testimonial.title}</figcaption></figure>}
+          </div>
+        </div>
+      </div>
+    </dialog>
+  ))}

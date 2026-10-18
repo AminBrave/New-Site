@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
+import SkillDialogs from './SkillDialogs.astro';
+import WorkDialogs from './WorkDialogs.astro';
 import { content, workShared } from '../data/content';
 import { rich } from '../lib/rich';
 import type { IconName } from '../lib/icons';
@@ -229,104 +231,9 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
     </div>
   </dialog>
 
-  {discs.map((d) => (
-    <dialog class="case-dlg skill-dlg" id={`skill-${d.id}`} aria-labelledby={`skill-${d.id}-t`} style={`--c:${d.color}`}>
-      <div class="dlg-bar">
-        <div class="dlg-id"><span class="tile sm"><Icon name={d.icon} size={18} /></span><span>{d.name}</span></div>
-        <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
-      </div>
-      <div class="cover" aria-hidden="true">
-        <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`gs-${d.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#gs-${d.id})`}/></svg>
-        <span class="cover-ic"><Icon name={d.icon} size={56} /></span>
-      </div>
-      <div class="dlg-body">
-        <header class="dlg-head">
-          <h2 id={`skill-${d.id}-t`}>{d.name}</h2>
-          <p set:html={rich(d.summary)} />
-        </header>
-        <div class="dlg-grid">
-          <aside class="dlg-side">
-            <dl class="facts">
-              <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.toolkit}</dt><dd><ul class="chips sm">{d.detail.tools.map((x) => <li>{x}</li>)}</ul></dd></div>
-            </dl>
-            {d.detail.related.length > 0 && (
-              <div class="rel">
-                <h3><Icon name="briefcase" size={16} />{t.ui.related}</h3>
-                <ul>
-                  {d.detail.related.map((rid) => {
-                    const w = works.find((x) => x.id === rid);
-                    return w && <li><button type="button" class="rel-btn" data-open={`case-${w.id}`} aria-haspopup="dialog"><Logo w={w} size="sm" /><span>{w.title}</span><Icon name="arrow" size={16} /></button></li>;
-                  })}
-                </ul>
-              </div>
-            )}
-            <a class="btn primary wide" href={`mailto:${t.email}?subject=${encodeURIComponent(d.name)}`}><Icon name="mail" size={18} /><span>{t.ui.talk}</span></a>
-          </aside>
-          <div class="dlg-main">
-            <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(d.detail.overview)} /></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="check" size={18} /></span>{t.ui.deliver}</h3>
-              <ul class="goals">{d.detail.deliverables.map((x) => <li><Icon name="check" size={18} /><span set:html={rich(x)} /></li>)}</ul></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.approach}</h3>
-              <ol class="mini-steps">{d.detail.approach.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span>{p.text}</span></div></li>)}</ol></section>
-            <section class="blk ai-box"><h3><span class="tile sm"><Icon name="spark" size={18} /></span>{d.detail.ai.title}</h3>
-              <p set:html={rich(d.detail.ai.text)} />
-              <ul class="ai-points">{d.detail.ai.points.map((x) => <li><Icon name="spark" size={14} />{x}</li>)}</ul></section>
-          </div>
-        </div>
-      </div>
-    </dialog>
-  ))}
+  <SkillDialogs t={t} discs={discs} works={works} fmt={fmt} />
 
-  {works.map((w) => (
-    <dialog class="case-dlg" id={`case-${w.id}`} aria-labelledby={`case-${w.id}-t`} style={`--c:${w.color}`}>
-      <div class="dlg-bar">
-        <div class="dlg-id"><Logo w={w} size="sm" /><span>{w.client}</span></div>
-        <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
-      </div>
-      <div class="cover" aria-hidden="true">
-        <svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice"><defs><pattern id={`g-${w.id}`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".18"/></pattern></defs><rect width="400" height="140" fill={`url(#g-${w.id})`}/></svg>
-        {w.cover && <img src={src(w.cover)} alt="" loading="lazy" decoding="async" onerror="this.remove()" />}
-      </div>
-      <div class="dlg-body">
-        <header class="dlg-head">
-          <h2 id={`case-${w.id}-t`}>{w.title}</h2>
-          <p set:html={rich(w.summary)} />
-          <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
-        </header>
-        <div class="dlg-grid">
-          <aside class="dlg-side">
-            <dl class="facts">
-              <div><dt><Icon name="briefcase" size={16} />{t.ui.client}</dt><dd>{w.client}</dd></div>
-              <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
-              <div><dt><Icon name="clock" size={16} />{t.ui.duration}</dt><dd>{w.duration}</dd></div>
-              <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
-              {w.tools?.length > 0 && <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
-            </dl>
-            {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
-          </aside>
-          <div class="dlg-main">
-            <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(w.overview)} /></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="flag" size={18} /></span>{t.ui.challenge}</h3><p set:html={rich(w.challenge)} /></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="target" size={18} /></span>{t.ui.goals}</h3>
-              <ul class="goals">{w.goals.map((g) => <li><Icon name="check" size={18} /><span set:html={rich(g)} /></li>)}</ul></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="pen" size={18} /></span>{t.ui.myRole}</h3><p set:html={rich(w.role)} /></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="route" size={18} /></span>{t.ui.process}</h3>
-              <ol class="mini-steps">{w.process.map((p, i) => <li><span class="n">{fmt(i + 1)}</span><div><strong>{p.title}</strong><span set:html={rich(p.text)} /></div></li>)}</ol></section>
-            <section class="blk"><h3><span class="tile sm"><Icon name="layers" size={18} /></span>{t.ui.solution}</h3><p set:html={rich(w.solution)} /></section>
-            {w.results?.length > 0 && <section class="blk"><h3><span class="tile sm"><Icon name="trend" size={18} /></span>{t.ui.results}</h3>
-              <ul class="kpis">{w.results.map((r) => <li><b>{r.value}</b><span>{r.label}</span></li>)}</ul></section>}
-            <section class="blk"><h3><span class="tile sm"><Icon name="image" size={18} /></span>{t.ui.gallery}</h3>
-              <ul class="gallery">
-                {w.gallery?.length > 0
-                  ? w.gallery.map((g, i) => <li><img src={src(g)} alt={`${w.title} — ${t.ui.shot} ${fmt(i + 1)}`} loading="lazy" decoding="async" /></li>)
-                  : [1, 2, 3].map(() => <li class="ph" aria-hidden="true"><Icon name="image" size={28} /><span>{t.ui.shot}</span></li>)}
-              </ul></section>
-            {w.testimonial && <figure class="quote"><Icon name="quote" size={28} /><blockquote>{w.testimonial.quote}</blockquote><figcaption><b>{w.testimonial.author}</b> · {w.testimonial.title}</figcaption></figure>}
-          </div>
-        </div>
-      </div>
-    </dialog>
-  ))}
+  <WorkDialogs t={t} works={works} fmt={fmt} src={src} />
 
   <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
 </Base>
