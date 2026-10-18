@@ -78,6 +78,8 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 
 <script>
   /* ---------- helpers ---------- */
+  import { activateSection, initScrollTracking } from '../scripts/scroll-tracking';
+
   function $<T extends HTMLElement = HTMLElement>(selector: string, scope: ParentNode = document): T | null {
     return scope.querySelector<T>(selector);
   }
@@ -101,85 +103,8 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hasObserver = 'IntersectionObserver' in window;
 
-  const bar = $('.bar');
-  const progress = $('.progress');
-  const hero = $('#top');
-  const dots = $$<HTMLAnchorElement>('.dots a');
-  const menuLinks = $$<HTMLAnchorElement>('.menu-nav a');
-  const sections = $$('[data-section]');
-  const steps = $('[data-steps]');
-  const stepItems = steps ? $$('li', steps) : [];
-
-  /* ---------- active section, scroll progress, step bar ---------- */
-  function activate(id: string): void {
-    const href = `#${id}`;
-    for (const link of [...dots, ...menuLinks]) {
-      if (link.getAttribute('href') === href) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    }
-    for (const section of sections) section.classList.toggle('is-active', section.id === id);
-  }
-
-  let stepsNear = !hasObserver;
-  function updateStepProgress(): void {
-    if (!steps || !stepsNear) return; // skip layout reads while the steps are far off-screen
-    const rect = steps.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const p = Math.min(1, Math.max(0, (vh * 0.82 - rect.top) / (rect.height + vh * 0.3)));
-    steps.style.setProperty('--p', p.toFixed(3));
-    stepItems.forEach((item, i) => item.classList.toggle('done', p > 0.02 && p * 4 >= i - 0.001));
-  }
-
-  /** Fallback for browsers without IntersectionObserver. */
-  function activateFromScroll(): void {
-    const middle = window.innerHeight / 2;
-    const hit = sections.find((s) => {
-      const r = s.getBoundingClientRect();
-      return r.top <= middle && r.bottom > middle;
-    });
-    if (hit) activate(hit.id);
-  }
-
-  let scrollQueued = false;
-  function onScroll(): void {
-    if (scrollQueued) return;
-    scrollQueued = true;
-    requestAnimationFrame(() => {
-      const y = window.scrollY;
-      const max = root.scrollHeight - window.innerHeight;
-      progress?.style.setProperty('--p', String(max > 0 ? Math.min(y / max, 1) : 0));
-      bar?.classList.toggle('scrolled', y > 8);
-      if (!hasObserver) activateFromScroll();
-      const last = sections[sections.length - 1];
-      if (last && max > 0 && max - y < 4) activate(last.id);
-      updateStepProgress();
-      scrollQueued = false;
-    });
-  }
-
-  run('scroll', () => {
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', onScroll);
-    onScroll();
-  });
-
-  run('sections', () => {
-    if (!hasObserver) return;
-    const sectionObserver = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && activate(entry.target.id)),
-      { rootMargin: '-45% 0px -50% 0px' },
-    );
-    sections.forEach((section) => sectionObserver.observe(section));
-    if (steps) {
-      new IntersectionObserver(
-        (entries) => {
-          stepsNear = entries.some((entry) => entry.isIntersecting);
-          if (stepsNear) onScroll();
-        },
-        { rootMargin: '25% 0px' },
-      ).observe(steps);
-    }
-  });
+  /* ---------- scroll and section tracking ---------- */
+  run('scroll tracking', initScrollTracking);
 
   /* ---------- dot labels: also show on tap (touch has no hover) ---------- */
   run('dots', () => {
@@ -268,7 +193,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
     openDialog = dialog;
     if (id === 'menu') {
       const current = dots.find((link) => link.getAttribute('aria-current') === 'true');
-      if (current) activate(current.hash.slice(1));
+      if (current) activateSection(current.hash.slice(1));
       setMenuExpanded(true);
     }
     const state: ModalState = { modal: id };
