@@ -79,6 +79,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 <script>
   import { initScrollTracking } from '../scripts/scroll-tracking';
   import { initModalController } from '../scripts/modal-controller';
+  import { initThemeController } from '../scripts/theme-controller';
 
   /* ---------- helpers ---------- */
   function $<T extends HTMLElement = HTMLElement>(selector: string, scope: ParentNode = document): T | null {
@@ -137,27 +138,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   initModalController();
 
   /* ---------- theme switch ---------- */
-  run('theme', () => {
-    const themeSwitch = $('[data-theme-toggle]');
-    const syncSwitch = (): void => themeSwitch?.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
-    syncSwitch();
-    themeSwitch?.addEventListener('click', () => {
-      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-      root.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch { /* storage unavailable */ }
-      syncSwitch();
-    });
-    const scheme = matchMedia('(prefers-color-scheme: dark)');
-    if (typeof scheme.addEventListener === 'function') {
-      scheme.addEventListener('change', (event) => {
-        let stored: string | null = null;
-        try { stored = localStorage.getItem('theme'); } catch { /* storage unavailable */ }
-        if (stored) return;
-        root.dataset.theme = event.matches ? 'dark' : 'light';
-        syncSwitch();
-      });
-    }
-  });
+  run('theme', initThemeController);
 
   /* ---------- copy email ---------- */
   run('copy', () => {
