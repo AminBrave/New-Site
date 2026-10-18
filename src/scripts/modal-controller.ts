@@ -14,7 +14,7 @@ export function initModalController(): void {
   };
   const root = document.documentElement;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const dots = $<HTMLAnchorElement>('.dots a');
+  const dots = Array.from(document.querySelectorAll<HTMLAnchorElement>('.dots a'));
 
   /* ---------- modals: native <dialog>, with a fallback for browsers without showModal ---------- */
   interface ModalState { modal: string }
