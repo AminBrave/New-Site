@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { rich } from '../lib/rich';
+import type { IconName } from '../lib/icons';
 import type { Locale } from '../data/types';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   fmt: (n: number) => string;
 }
 const { t, fmt } = Astro.props;
-const stepIcons = ['search', 'target', 'pen', 'code', 'trend'] as const;
+const stepIcons: IconName[] = ['search', 'target', 'pen', 'code', 'trend'];
 ---
     <section id="process" tabindex="-1" data-section><div class="wrap">
       <div class="sh" data-reveal><span class="tile"><Icon name="route" size={24} /></span><h2>{t.processHead}</h2></div>
