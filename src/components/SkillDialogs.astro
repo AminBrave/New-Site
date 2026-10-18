@@ -10,10 +10,9 @@ interface Props {
   discs: Array<Discipline & { icon: IconName; color: string }>;
   works: Array<Work & WorkShared>;
   fmt: (n: number) => string;
-  src: (path: string) => string;
 }
 
-const { t, discs, works, fmt, src } = Astro.props;
+const { t, discs, works, fmt } = Astro.props;
 ---
   {discs.map((d) => (
     <dialog class="case-dlg skill-dlg" id={`skill-${d.id}`} aria-labelledby={`skill-${d.id}-t`} style={`--c:${d.color}`}>
