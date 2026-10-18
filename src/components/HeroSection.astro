@@ -1,11 +1,12 @@
 ---
 import Icon from './Icon.astro';
 import { rich } from '../lib/rich';
+import type { IconName } from '../lib/icons';
 import type { Locale } from '../data/types';
 
 interface Props { t: Locale }
 const { t } = Astro.props;
-const roleIcons = ['ux', 'cart', 'content'] as const;
+const roleIcons: IconName[] = ['ux', 'cart', 'content'];
 const roleClasses = ['r-ux', 'r-woo', 'r-content'];
 const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 ---
