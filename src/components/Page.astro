@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Icon from './Icon.astro';
-import Logo from './Logo.astro';
 import SkillDialogs from './SkillDialogs.astro';
 import WorkDialogs from './WorkDialogs.astro';
 import HeroSection from './HeroSection.astro';
@@ -10,6 +9,7 @@ import ProcessSection from './ProcessSection.astro';
 import WorkSection from './WorkSection.astro';
 import ResumeSection from './ResumeSection.astro';
 import ContactSection from './ContactSection.astro';
+import Navigation from './Navigation.astro';
 import { content, workShared } from '../data/content';
 import type { IconName } from '../lib/icons';
 import type { DisciplineId, Lang, SectionId } from '../data/types';
@@ -52,13 +52,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
     </div>
   </header>
 
-  <nav class="dots" aria-label={t.ui.sections}>
-    <ol>
-      {ids.map((id, i) => (
-        <li><a href={`#${id}`} aria-current={i === 0 ? 'true' : undefined}><span class="lab"><Icon name={navIcons[id]} size={14} />{t.ui.nav[id]}</span><span class="pip"></span></a></li>
-      ))}
-    </ol>
-  </nav>
+  <Navigation lang={lang} t={t} urls={urls} otherLang={otherLang} fmt={fmt} ids={ids} navIcons={navIcons} />
 
   <main id="main">
     <HeroSection t={t} />
@@ -74,40 +68,6 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
     <ContactSection t={t} />
 
   </main>
-
-  <dialog class="menu-dlg" id="menu" aria-label={t.ui.menuTitle}>
-    <div class="menu-in">
-      <div class="menu-top">
-        <a class="brand" href="#top" data-nav><span class="logo" aria-hidden="true"></span><span class="bname">{t.name}</span></a>
-        <button class="x" type="button" data-close aria-label={t.ui.menuClose}><Icon name="x" size={20} /></button>
-      </div>
-      <nav aria-label={t.ui.menuTitle}>
-        <ol class="menu-nav">
-          {ids.map((id, i) => (
-            <li style={`--k:${i}`}><a href={`#${id}`} data-nav><span class="mn" aria-hidden="true">{fmt(i + 1)}</span><span class="tile sm"><Icon name={navIcons[id]} size={18} /></span><span class="ml">{t.ui.nav[id]}</span><Icon name="arrow" size={18} class="mar" /></a></li>
-          ))}
-        </ol>
-      </nav>
-      <div class="menu-set">
-        <div class="set-row">
-          <span class="set-l"><Icon name="globe" size={18} />{t.ui.langLabel}</span>
-          <nav class="lang" dir="ltr" aria-label={t.ui.langLabel} data-active={lang}>
-            <a href={urls.en} lang="en" hreflang="en" aria-current={lang === 'en' ? 'true' : undefined} aria-label="English">EN</a>
-            <a href={urls.fa} lang="fa" hreflang="fa" aria-current={lang === 'fa' ? 'true' : undefined} aria-label="فارسی">FA</a>
-          </nav>
-        </div>
-        <div class="set-row">
-          <span class="set-l" id="theme-l"><Icon name="moon" size={18} />{t.ui.themeLabel}</span>
-          <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="theme-l" data-theme-toggle>
-            <span class="knob"><Icon name="sun" size={14} class="k-sun" /><Icon name="moon" size={14} class="k-moon" /></span>
-          </button>
-        </div>
-      </div>
-      <div class="menu-cta">
-        <a class="btn primary" href={`mailto:${t.email}`}><Icon name="mail" size={18} />{t.ui.ctaMail}</a>
-      </div>
-    </div>
-  </dialog>
 
   <SkillDialogs t={t} discs={discs} works={works} fmt={fmt} />
 
