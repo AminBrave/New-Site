@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { rich } from '../lib/rich';
+import type { Locale, Work, WorkShared } from '../data/types';
+
+interface Props {
+  t: Locale;
+  works: Array<Work & WorkShared>;
+}
+const { t, works } = Astro.props;
+---
+    <section id="work" tabindex="-1" data-section><div class="wrap">
+      <div class="sh" data-reveal><span class="tile"><Icon name="briefcase" size={24} /></span><h2>{t.workHead}</h2></div>
+      <p class="sub" data-reveal style="--d:1">{t.workSub}</p>
+      <div class="cases">
+        {works.map((w, i) => (
+          <div class="case-wrap" data-reveal style={`--d:${i}`}>
+            <article class="case" style={`--c:${w.color}`}>
+              <div class="case-head">
+                <Logo w={w} />
+                <div><h3>{w.title}</h3><p class="client">{w.client} · {w.year}</p></div>
+              </div>
+              <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
+              <p class="case-sum" set:html={rich(w.summary)} />
+              <button class="open" type="button" data-open={`case-${w.id}`} aria-haspopup="dialog"><span>{t.ui.viewCase}</span><Icon name="arrow" size={18} /><span class="sr"> — {w.title}</span></button>
+            </article>
+          </div>
+        ))}
+      </div>
+    </div></section>
