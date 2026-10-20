@@ -481,3 +481,10 @@ dialog.menu-dlg.legacy[open] { top: 0; right: 0; left: auto; transform: none; }
 /* low: no animation and no glow. Content and layout stay identical. */
 [data-perf='low'] *, [data-perf='low'] *::before, [data-perf='low'] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 [data-perf='low'] :is(.tile, .case, .more, .btn, .chips li) { box-shadow: none !important; }
+
+
+/* Bootstrap grid owns the project-card row when the framework classes are present. */
+.cases.row {
+  display: flex;
+  flex-wrap: wrap;
+}
