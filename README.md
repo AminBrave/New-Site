@@ -62,3 +62,26 @@ Fonts are bundled in `src/assets/fonts` and declared in `src/styles/fonts-en.css
 Adaptive effects (`data-perf` on `<html>`) use browser capability signals and a short frame-rate probe to reduce effects on slower devices. `prefers-reduced-motion` and `prefers-color-scheme` are respected.
 
 **cPanel:** `public/.htaccess` enables compression, long caching for hashed files, and basic security headers. GitHub Pages ignores this file. Fonts are preloaded and CSS is inlined.
+
+
+## UI foundation: Astro + Bootstrap
+
+This project uses **Astro** for routing, static rendering, page composition, and build output, with **Bootstrap 5.3.8** as a selectively adopted layout toolkit.
+
+### Integration boundary
+
+- Bootstrap is installed as a pinned npm dependency and built locally through Vite; no runtime CDN dependency is introduced.
+- Only Bootstrap's responsive grid and utility styles are imported from `src/styles/bootstrap.css`.
+- Bootstrap's Reboot, global component styles, and JavaScript bundle are intentionally not imported. The portfolio's custom design tokens, typography, components, RTL behavior, theme switching, dialogs, and interaction controllers remain the source of truth.
+- Use Bootstrap grid classes such as `row`, `col-12`, `col-md-6`, and `col-xl-4` where responsive layout benefits from a standard grid. Keep bespoke visual components in the existing component-scoped class system.
+- Prefer Astro components and typed data in `src/components` and `src/data`; add client JavaScript only for genuinely interactive behavior.
+
+### Development checks
+
+```sh
+npm ci
+npm run check
+npm run build
+```
+
+When adopting additional Bootstrap features, import only the required styles and verify light/dark themes, Persian RTL layout, keyboard focus, reduced motion, and mobile breakpoints. Avoid importing a second global reset or adding Bootstrap JavaScript unless a concrete interaction requires it.

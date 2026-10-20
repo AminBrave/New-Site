@@ -1,0 +1,16 @@
+/* Bootstrap 5.3.8 integration
+ * Deliberately import only the responsive grid and utility API.
+ * The site's existing design tokens, components, typography, and interaction
+ * patterns remain owned by global.css. Avoid importing Bootstrap's reboot or
+ * full component bundle, which would introduce broad cascade conflicts.
+ */
+@import 'bootstrap/dist/css/bootstrap-grid.min.css';
+@import 'bootstrap/dist/css/bootstrap-utilities.min.css';
+
+/* Keep Bootstrap's container gutters aligned with the site's own wrapper. */
+:root {
+  --bs-gutter-x: 1.5rem;
+}
+@media (max-width: 575.98px) {
+  :root { --bs-gutter-x: 1rem; }
+}
