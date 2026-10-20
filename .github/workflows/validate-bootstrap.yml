@@ -34,5 +34,7 @@ jobs:
           grep -q 'lang="en"' dist/index.html
           grep -q 'lang="fa"' dist/fa/index.html
           grep -q 'dir="rtl"' dist/fa/index.html
-          grep -q 'bootstrap@5.3.8' dist/index.html
-          grep -q 'bootstrap@5.3.8' dist/fa/index.html
+          grep -q '\.container' dist/index.html
+          grep -q '\.container' dist/fa/index.html
+          ! grep -q 'cdn.jsdelivr.net/npm/bootstrap' dist/index.html
+          ! grep -q 'cdn.jsdelivr.net/npm/bootstrap' dist/fa/index.html
