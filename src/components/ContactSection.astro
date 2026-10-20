@@ -8,7 +8,7 @@ const { t } = Astro.props;
     <section id="contact" class="contact" tabindex="-1" data-section><div class="wrap">
       <div class="sh" data-reveal><span class="tile"><Icon name="mail" size={24} /></span><h2>{t.contactHead}</h2></div>
       <p class="sub" data-reveal style="--d:1">{t.contactSub}</p>
-      <div class="mailrow" data-reveal style="--d:2">
+      <div class="mailrow d-flex flex-wrap align-items-center" data-reveal style="--d:2">
         <a class="mail" dir="ltr" href={`mailto:${t.email}`}>{t.email}</a>
         <button class="btn copy" type="button" data-copy={t.email} data-done={t.ui.copied}>
           <svg class="i-copy" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15V6a2 2 0 012-2h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
