@@ -1,4 +1,5 @@
 ---
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/global.css';
 import '../styles/bootstrap-tokens.css';
 import type { Lang } from '../data/types';
@@ -24,8 +25,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
 <html lang={lang} dir={dir}>
   <head>
     <meta charset="utf-8" />
-    <!-- Bootstrap 5.3.8 CSS only; native dialog/controllers retain interaction ownership. -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap CSS is bundled locally; native dialog/controllers retain interaction ownership. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
