@@ -14,3 +14,11 @@
 @media (max-width: 575.98px) {
   :root { --bs-gutter-x: 1rem; }
 }
+
+/* Bootstrap grid rows use negative container gutters. Keep this grid's
+   spacing entirely within Bootstrap's column gutters instead of stacking
+   Bootstrap gutters on top of the portfolio's former CSS Grid gap. */
+.cases.row {
+  gap: 0;
+  margin-top: 0;
+}
