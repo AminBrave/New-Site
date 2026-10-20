@@ -11,7 +11,7 @@ interface Props {
 const { t, fmt } = Astro.props;
 const stepIcons: IconName[] = ['search', 'target', 'pen', 'code', 'trend'];
 ---
-    <section id="process" tabindex="-1" data-section><div class="wrap">
+    <section id="process" tabindex="-1" data-section><div class="container wrap">
       <div class="sh" data-reveal><span class="tile"><Icon name="route" size={24} /></span><h2>{t.processHead}</h2></div>
       <p class="sub" data-reveal style="--d:1" set:html={rich(t.processSub)} />
       <ol class="steps" data-steps>

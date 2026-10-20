@@ -29,8 +29,8 @@ const { t, works, fmt, src } = Astro.props;
           <p set:html={rich(w.summary)} />
           <ul class="tags">{w.roles.map((r) => <li>{r}</li>)}</ul>
         </header>
-        <div class="dlg-grid">
-          <aside class="dlg-side">
+        <div class="row g-4">
+          <aside class="dlg-side col-12 col-lg-4">
             <dl class="facts">
               <div><dt><Icon name="briefcase" size={16} />{t.ui.client}</dt><dd>{w.client}</dd></div>
               <div><dt><Icon name="calendar" size={16} />{t.ui.year}</dt><dd>{w.year}</dd></div>
@@ -38,9 +38,9 @@ const { t, works, fmt, src } = Astro.props;
               <div><dt><Icon name="user" size={16} />{t.ui.team}</dt><dd>{w.team}</dd></div>
               {w.tools?.length > 0 && <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.tools}</dt><dd><ul class="chips sm">{w.tools.map((x) => <li>{x}</li>)}</ul></dd></div>}
             </dl>
-            {w.url && <a class="btn primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
+            {w.url && <a class="btn btn-primary primary wide" href={w.url} rel="noopener" target="_blank"><span>{t.ui.visit}</span><Icon name="external" size={18} /></a>}
           </aside>
-          <div class="dlg-main">
+          <div class="dlg-main col-12 col-lg-8">
             <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(w.overview)} /></section>
             <section class="blk"><h3><span class="tile sm"><Icon name="flag" size={18} /></span>{t.ui.challenge}</h3><p set:html={rich(w.challenge)} /></section>
             <section class="blk"><h3><span class="tile sm"><Icon name="target" size={18} /></span>{t.ui.goals}</h3>

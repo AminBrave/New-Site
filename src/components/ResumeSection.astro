@@ -5,7 +5,7 @@ import type { Locale } from '../data/types';
 interface Props { t: Locale }
 const { t } = Astro.props;
 ---
-    <section id="resume" tabindex="-1" data-section><div class="wrap">
+    <section id="resume" tabindex="-1" data-section><div class="container wrap">
       <div class="sh" data-reveal><span class="tile"><Icon name="file" size={24} /></span><h2>{t.resumeHead}</h2></div>
       <ul class="xp">
         {t.experience.map((e, i) => (

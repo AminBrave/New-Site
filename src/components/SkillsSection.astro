@@ -10,7 +10,7 @@ interface Props {
 }
 const { t, discs } = Astro.props;
 ---
-    <section id="skills" tabindex="-1" data-section><div class="wrap">
+    <section id="skills" tabindex="-1" data-section><div class="container wrap">
       <div class="sh" data-reveal><span class="tile"><Icon name="layers" size={24} /></span><h2>{t.skillsHead}</h2></div>
       <p class="sub" data-reveal style="--d:1">{t.title}.</p>
       {discs.map((d, k) => (

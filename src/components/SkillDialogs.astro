@@ -29,8 +29,8 @@ const { t, discs, works, fmt } = Astro.props;
           <h2 id={`skill-${d.id}-t`}>{d.name}</h2>
           <p set:html={rich(d.summary)} />
         </header>
-        <div class="dlg-grid">
-          <aside class="dlg-side">
+        <div class="row g-4">
+          <aside class="dlg-side col-12 col-lg-4">
             <dl class="facts">
               <div class="wide"><dt><Icon name="tools" size={16} />{t.ui.toolkit}</dt><dd><ul class="chips sm">{d.detail.tools.map((x) => <li>{x}</li>)}</ul></dd></div>
             </dl>
@@ -45,9 +45,9 @@ const { t, discs, works, fmt } = Astro.props;
                 </ul>
               </div>
             )}
-            <a class="btn primary wide" href={`mailto:${t.email}?subject=${encodeURIComponent(d.name)}`}><Icon name="mail" size={18} /><span>{t.ui.talk}</span></a>
+            <a class="btn btn-primary primary wide" href={`mailto:${t.email}?subject=${encodeURIComponent(d.name)}`}><Icon name="mail" size={18} /><span>{t.ui.talk}</span></a>
           </aside>
-          <div class="dlg-main">
+          <div class="dlg-main col-12 col-lg-8">
             <section class="blk"><h3><span class="tile sm"><Icon name="bulb" size={18} /></span>{t.ui.overview}</h3><p set:html={rich(d.detail.overview)} /></section>
             <section class="blk"><h3><span class="tile sm"><Icon name="check" size={18} /></span>{t.ui.deliver}</h3>
               <ul class="goals">{d.detail.deliverables.map((x) => <li><Icon name="check" size={18} /><span set:html={rich(x)} /></li>)}</ul></section>
