@@ -71,7 +71,7 @@ This project uses **Astro** for routing, static rendering, page composition, and
 ### Integration boundary
 
 - Bootstrap is installed as a pinned npm dependency and built locally through Vite; no runtime CDN dependency is introduced.
-- Only Bootstrap's responsive grid and utility styles are imported from `src/styles/bootstrap.css`.
+- Only Bootstrap's responsive grid styles are imported from `src/styles/bootstrap.css`.
 - Bootstrap's Reboot, global component styles, and JavaScript bundle are intentionally not imported. The portfolio's custom design tokens, typography, components, RTL behavior, theme switching, dialogs, and interaction controllers remain the source of truth.
 - Use Bootstrap grid classes such as `row`, `col-12`, `col-md-6`, and `col-xl-4` where responsive layout benefits from a standard grid. Keep bespoke visual components in the existing component-scoped class system.
 - Prefer Astro components and typed data in `src/components` and `src/data`; add client JavaScript only for genuinely interactive behavior.
