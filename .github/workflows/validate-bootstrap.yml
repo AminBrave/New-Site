@@ -1,0 +1,38 @@
+name: Validate Bootstrap migration
+on:
+  push:
+    branches: [bootstrap-framwork-refactor]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deployment:
+          - { name: root, base: / }
+          - { name: pages, base: /New-Site }
+    env:
+      ASTRO_SITE: https://example.com
+      ASTRO_BASE: ${{ matrix.deployment.base }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - name: Verify locale output
+        shell: bash
+        run: |
+          test -f dist/index.html
+          test -f dist/fa/index.html
+          grep -q 'lang="en"' dist/index.html
+          grep -q 'lang="fa"' dist/fa/index.html
+          grep -q 'dir="rtl"' dist/fa/index.html
+          grep -q 'bootstrap@5.3.8' dist/index.html
+          grep -q 'bootstrap@5.3.8' dist/fa/index.html
