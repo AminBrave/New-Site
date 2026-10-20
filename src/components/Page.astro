@@ -42,10 +42,10 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   <div class="progress" aria-hidden="true"></div>
 
   <header class="bar">
-    <div class="wrap bar-in">
+    <div class="container wrap bar-in">
       <a class="brand" href="#top"><span class="logo" aria-hidden="true"></span><span class="bname">{t.name}</span></a>
       <noscript><a class="ns-lang" href={urls[otherLang]}>{lang === 'fa' ? 'English' : 'فارسی'}</a></noscript>
-      <button class="menu-btn" type="button" data-open="menu" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">
+      <button class="menu-btn btn btn-outline-secondary" type="button" data-open="menu" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">
         <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="mlabel">{t.ui.menu}</span>
       </button>
@@ -73,7 +73,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 
   <WorkDialogs t={t} works={works} fmt={fmt} src={src} />
 
-  <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
+  <footer><div class="container wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
 </Base>
 
 <script>

@@ -64,17 +64,18 @@ Adaptive effects (`data-perf` on `<html>`) use browser capability signals and a 
 **cPanel:** `public/.htaccess` enables compression, long caching for hashed files, and basic security headers. GitHub Pages ignores this file. Fonts are preloaded and CSS is inlined.
 
 
-## UI foundation: Astro + Bootstrap
+## UI architecture: Astro + Bootstrap
 
-This project uses **Astro** for routing, static rendering, page composition, and build output, with **Bootstrap 5.3.8** as a selectively adopted layout toolkit.
+Astro remains the rendering, routing, content-composition, and build framework. Bootstrap 5.3.8 is the primary responsive layout and utility framework, bundled locally through Vite.
 
-### Integration boundary
+### Integration and ownership
 
-- Bootstrap is installed as a pinned npm dependency and built locally through Vite; no runtime CDN dependency is introduced.
-- Only Bootstrap's responsive grid styles are imported from `src/styles/bootstrap.css`.
-- Bootstrap's Reboot, global component styles, and JavaScript bundle are intentionally not imported. The portfolio's custom design tokens, typography, components, RTL behavior, theme switching, dialogs, and interaction controllers remain the source of truth.
-- Use Bootstrap grid classes such as `row`, `col-12`, `col-md-6`, and `col-xl-4` where responsive layout benefits from a standard grid. Keep bespoke visual components in the existing component-scoped class system.
-- Prefer Astro components and typed data in `src/components` and `src/data`; add client JavaScript only for genuinely interactive behavior.
+- `src/styles/bootstrap.css` imports the complete Bootstrap stylesheet, including Reboot, grid, utilities, and standard component styles. No runtime CDN is used.
+- Bootstrap is loaded before `src/styles/global.css`; the site's design tokens, typography, bespoke portfolio visuals, animation rules, and accessible theme behavior are intentional overrides rather than a second framework reset.
+- Prefer Bootstrap's responsive containers, rows, columns, spacing, flex, display, and component utility classes for new layout work. Keep custom CSS for brand-specific visual treatments and behavior that Bootstrap does not provide.
+- Astro components and the typed `src/data` model remain the source of truth. Client-side JavaScript is reserved for interactive behavior.
+- Existing native `dialog`-based navigation and case-study overlays remain native dialogs; Bootstrap JavaScript is not loaded redundantly because these interactions already have a dedicated accessible controller.
+- Persian pages retain the document's `dir="rtl"`. Review directional utilities and any left/right assumptions when adding new Bootstrap classes.
 
 ### Development checks
 
