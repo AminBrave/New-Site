@@ -21,7 +21,7 @@ const { t, works } = Astro.props;
                 <Logo w={w} />
                 <div><h3>{w.title}</h3><p class="client">{w.client} · {w.year}</p></div>
               </div>
-              <ul class="tags d-flex flex-wrap">{w.roles.map((r) => <li>{r}</li>)}</ul>
+              <ul class="tags d-flex flex-wrap gap-2">{w.roles.map((r) => <li>{r}</li>)}</ul>
               <p class="case-sum" set:html={rich(w.summary)} />
               <button class="open" type="button" data-open={`case-${w.id}`} aria-haspopup="dialog"><span>{t.ui.viewCase}</span><Icon name="arrow" size={18} /><span class="sr"> — {w.title}</span></button>
             </article>
