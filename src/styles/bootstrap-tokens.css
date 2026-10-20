@@ -1,5 +1,5 @@
 /* Bootstrap 5.3 semantic-token bridge.
-   Load after Bootstrap when the dependency and lockfile are installed.
+   Load after Bootstrap's bundled CSS to adapt framework tokens to the existing theme.
    Existing portfolio styles remain authoritative during incremental migration. */
 :root {
   --bs-body-font-family: var(--body);
