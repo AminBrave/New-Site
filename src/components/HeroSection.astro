@@ -22,7 +22,7 @@ const arrow = '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true
           <ul class="roles">
             {t.roles.map((r, i) => <li><a href={r.href} class={roleClasses[i]}><Icon name={roleIcons[i]} size={18} />{r.label}</a></li>)}
           </ul>
-          <div class="btns d-flex flex-wrap">
+          <div class="btns d-flex flex-wrap gap-2">
             <a class="btn primary" href="#work"><span>{t.ui.ctaWork}</span><span class="arr" set:html={arrow} /></a>
             <a class="btn" href={`mailto:${t.email}`}><Icon name="mail" size={18} />{t.ui.ctaMail}</a>
           </div>
