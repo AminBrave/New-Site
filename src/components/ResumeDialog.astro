@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { rich } from '../lib/rich';
+import type { Locale } from '../data/types';
+import type { ResumeContent } from '../data/resume';
+
+interface Props { t: Locale; r: ResumeContent }
+const { t, r } = Astro.props;
+---
+  <dialog class="case-dlg cv-dlg" id="cv" aria-labelledby="cv-t" style="--c:var(--accent)" data-print-title={`${t.name} — ${r.modalTitle}`}>
+    <div class="dlg-bar">
+      <div class="dlg-id"><span class="tile sm"><Icon name="file" size={18} /></span><span id="cv-t">{r.modalTitle}</span></div>
+      <button class="x" type="button" data-close aria-label={t.ui.close}><Icon name="x" size={20} /></button>
+    </div>
+    <div class="dlg-body">
+      <header class="cv-head">
+        <h2>{t.name}</h2>
+        <p class="cv-role">{t.title}</p>
+        <p class="cv-meta"><a href={`mailto:${t.email}`}>{t.email}</a><span aria-hidden="true">·</span><span>{r.availability}</span></p>
+      </header>
+      <section class="cv-blk">
+        <h3>{r.competenciesHead}</h3>
+        <ul class="cv-comp">{r.competencies.map((c) => <li><b>{c.title}</b><span>{c.text}</span></li>)}</ul>
+      </section>
+      <section class="cv-blk">
+        <h3>{r.careerHead}</h3>
+        <ol class="cv-jobs">
+          {r.jobs.map((e) => (
+            <li class="cv-job">
+              <div class="cv-job-top"><strong>{e.role}</strong><span class="cv-when">{e.period}</span></div>
+              <p class="cv-org">{e.org} · {e.place}</p>
+              <ul class="cv-pts">{e.points.map((p) => <li><span set:html={rich(p)} /></li>)}</ul>
+              <p class="cv-stack"><b>{r.stackLabel}:</b> {e.stack.join(' · ')}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </div>
+    <div class="cv-foot">
+      <p>{r.printHint}</p>
+      <div class="btns">
+        <button class="btn" type="button" data-print><Icon name="printer" size={18} /><span>{r.print}</span></button>
+        <button class="btn primary" type="button" data-close><span>{t.ui.close}</span></button>
+      </div>
+    </div>
+  </dialog>

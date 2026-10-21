@@ -8,9 +8,11 @@ import SkillsSection from './SkillsSection.astro';
 import ProcessSection from './ProcessSection.astro';
 import WorkSection from './WorkSection.astro';
 import ResumeSection from './ResumeSection.astro';
+import ResumeDialog from './ResumeDialog.astro';
 import ContactSection from './ContactSection.astro';
 import Navigation from './Navigation.astro';
 import { content, workShared } from '../data/content';
+import { resume } from '../data/resume';
 import type { IconName } from '../lib/icons';
 import type { DisciplineId, Lang, SectionId } from '../data/types';
 
@@ -21,6 +23,7 @@ interface Props {
 
 const { lang, preload } = Astro.props;
 const t = content[lang];
+const r = resume[lang];
 const root = import.meta.env.BASE_URL.replace(/\/$/, '');
 const urls: Record<Lang, string> = { en: `${root}/`, fa: `${root}/fa/` };
 const otherLang: Lang = lang === 'fa' ? 'en' : 'fa';
@@ -63,7 +66,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 
     <WorkSection t={t} works={works} />
 
-    <ResumeSection t={t} />
+    <ResumeSection t={t} r={r} />
 
     <ContactSection t={t} />
 
@@ -72,6 +75,8 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   <SkillDialogs t={t} discs={discs} works={works} fmt={fmt} />
 
   <WorkDialogs t={t} works={works} fmt={fmt} src={src} />
+
+  <ResumeDialog t={t} r={r} />
 
   <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
 </Base>
@@ -83,6 +88,7 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   import { initCopyController } from '../scripts/copy-controller';
   import { initDotTips, initRevealAnimations } from '../scripts/visual-effects';
   import { initPerformanceController } from '../scripts/performance-controller';
+  import { initPrintController } from '../scripts/print-controller';
 
   /** Runs one feature in isolation so a failure in one never breaks the others. */
   function run(name: string, init: () => void): void {
@@ -110,6 +116,9 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 
   /* ---------- copy email ---------- */
   run('copy', initCopyController);
+
+  /* ---------- resume print / save as PDF ---------- */
+  run('print', initPrintController);
 
   /* ---------- adaptive performance ---------- */
   run('perf', initPerformanceController);

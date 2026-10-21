@@ -103,7 +103,7 @@ export function initModalController(): void {
       }),
     );
     $$<HTMLDialogElement>('dialog').forEach((dialog) => {
-      $('[data-close]', dialog)?.addEventListener('click', () => hideDialog(dialog));
+      $$('[data-close]', dialog).forEach((button) => button.addEventListener('click', () => hideDialog(dialog)));
       dialog.addEventListener('click', (event) => {
         if (event.target === dialog) hideDialog(dialog);
       });
