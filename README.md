@@ -45,7 +45,7 @@ Run `npm run build` without the GitHub Pages `ASTRO_BASE` setting, then upload t
 
 ## Fonts
 
-Fonts are bundled in `src/assets/fonts` and declared in `src/styles/fonts-en.css` and `src/styles/fonts-fa.css`: Bricolage Grotesque and IBM Plex Sans for English, Vazirmatn for Persian. No external font requests or font packages are required.
+Fonts are bundled in `src/assets/fonts` and declared in `src/styles/fonts-en.scss` and `src/styles/fonts-fa.scss`: Bricolage Grotesque and IBM Plex Sans for English, Vazirmatn for Persian. No external font requests or font packages are required.
 
 ## Browser support and performance
 
@@ -62,3 +62,15 @@ Fonts are bundled in `src/assets/fonts` and declared in `src/styles/fonts-en.css
 Adaptive effects (`data-perf` on `<html>`) use browser capability signals and a short frame-rate probe to reduce effects on slower devices. `prefers-reduced-motion` and `prefers-color-scheme` are respected.
 
 **cPanel:** `public/.htaccess` enables compression, long caching for hashed files, and basic security headers. GitHub Pages ignores this file. Fonts are preloaded and CSS is inlined.
+
+## Styles (SCSS)
+
+Styles live in `src/styles` and are compiled by Astro/Vite (`sass` is a dev dependency). `main.scss` is the single entry point and lists the partials in cascade order:
+
+- `abstracts/` mixins (`m.min()`, `m.max()`, `m.hover`, `m.reduced-motion`, `m.forced-colors`)
+- `base/` tokens (CSS custom properties for light/dark), reset, accessibility, fallbacks, device tiers, print
+- `layout/` header, section wrappers, responsive overrides
+- `components/` menu, dots, buttons, tiles, dialogs, effects
+- `sections/` hero, skills, process, work, resume, contact
+
+Theming stays on CSS custom properties (`--accent`, `--paper`, ...), so the dark mode switch works at runtime. Add a partial, then `@use` it in `main.scss` at the right place in the order.

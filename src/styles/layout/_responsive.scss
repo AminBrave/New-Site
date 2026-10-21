@@ -1,0 +1,8 @@
+// Cross-section responsive overrides
+@use '../abstracts/mixins' as m;
+
+@include m.max(760px) {
+  .disc { grid-template-columns: 1fr; gap: 14px; }
+  .hero { padding: 24px 0 56px; }
+}
+@include m.max(380px) { .menu-btn .mlabel { display: none; } .menu-btn { padding: 0 14px; } }

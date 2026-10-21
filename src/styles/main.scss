@@ -1,0 +1,23 @@
+// Entry point. Order matters (it is the cascade): tokens → base → layout/components → sections → fallbacks → print.
+@use 'base/tokens';
+@use 'base/base';
+@use 'layout/header';
+@use 'components/menu';
+@use 'components/dots';
+@use 'components/buttons';
+@use 'sections/hero';
+@use 'layout/sections';
+@use 'components/tiles';
+@use 'sections/skills';
+@use 'sections/process';
+@use 'sections/work';
+@use 'components/dialogs';
+@use 'sections/contact';
+@use 'layout/responsive';
+@use 'base/a11y';
+@use 'components/effects';
+@use 'layout/mobile';
+@use 'base/fallbacks';
+@use 'base/perf-tiers';
+@use 'sections/resume';
+@use 'base/print';

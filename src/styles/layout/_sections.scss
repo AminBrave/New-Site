@@ -1,0 +1,14 @@
+// Section wrappers, headings, reveal
+@use '../abstracts/mixins' as m;
+
+section[data-section]:not(.hero) { padding: 64px 0; border-top: 1px solid var(--line); }
+@include m.max(600px) { section[data-section]:not(.hero) { padding: 48px 0; } }
+h2 { margin: 0; font: 700 clamp(1.7rem, 5vw, 2.5rem)/1.2 var(--display); letter-spacing: -0.01em; }
+.sh { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.sub { max-width: 60ch; margin: 0 0 36px; color: var(--muted); }
+.js [data-reveal]:not(.in) { opacity: 0; }
+.js [data-reveal].in { animation: reveal-in .7s var(--ease) backwards; animation-delay: calc(var(--d, 0) * 90ms); }
+.js [data-stagger]:not(.in) > * { opacity: 0; }
+.js [data-stagger].in > * { animation: pop-in .5s var(--ease) backwards; animation-delay: calc(var(--k, 0) * 45ms); }
+@keyframes reveal-in { from { opacity: 0; transform: translateY(18px); } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(10px) scale(.94); } }

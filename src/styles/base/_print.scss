@@ -1,0 +1,24 @@
+// Print: only the open CV dialog, always light, as one clean document.
+// `printing-cv` is set on <html> by scripts/print-controller.ts around beforeprint/afterprint.
+@media print {
+  @page { margin: 14mm; }
+
+  :root.printing-cv[data-theme] { --paper: #fff; --surface: #fff; --ink: #111a22; --muted: #46525d; --line: #cfd6dc; --accent: #2447f5; color-scheme: light; }
+
+  .printing-cv {
+    &, body { height: auto; overflow: visible !important; background: #fff; }
+    body > :not(dialog.cv-dlg) { display: none !important; }
+
+    dialog.cv-dlg {
+      display: block; position: static; inset: auto; width: auto; max-width: none; max-height: none; margin: 0; overflow: visible;
+      border-radius: 0; background: #fff; color: var(--ink); box-shadow: none; animation: none; transform: none;
+    }
+    .cv-dlg {
+      &, * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .dlg-bar, .cv-foot { display: none !important; }
+      .dlg-body { padding: 0; }
+    }
+    .cv-job, .cv-comp li { break-inside: avoid; }
+    .cv-head h2 { font-size: 1.9rem; }
+  }
+}

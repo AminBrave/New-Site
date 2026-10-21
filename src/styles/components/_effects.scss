@@ -1,0 +1,38 @@
+// Hover light sweep, explore button, skill tree
+@use '../abstracts/mixins' as m;
+
+.tile::before, .logo-tile::before { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; opacity: 0; background: linear-gradient(115deg, transparent 28%, color-mix(in srgb, var(--c, var(--accent)) 32%, transparent) 42%, rgba(255, 255, 255, .95) 50%, color-mix(in srgb, var(--c, var(--accent)) 32%, transparent) 58%, transparent 72%) no-repeat; background-size: 250% 100%; background-position: 160% 0; }
+@include m.hover {
+  :is(.tile, .logo-tile):hover::before, :is(a, button):hover :is(.tile, .logo-tile)::before, :is(a, button):focus-visible :is(.tile, .logo-tile)::before,
+  .disc:hover .tile.lg::before, .case:hover .logo-tile::before, .branch:hover .tile::before { animation: sweep .85s var(--ease) both; }
+}
+.tile.xs { width: 24px; height: 24px; border-radius: 8px; }
+
+.more { --ct: color-mix(in srgb, var(--c) 62%, var(--ink)); gap: 12px; min-height: 48px; padding-block: 0; padding-inline: 20px 8px; border: 1.5px solid color-mix(in srgb, var(--c) 55%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--c) 10%, transparent); font-weight: 700; transition: background .25s, color .25s, border-color .25s, transform .25s var(--ease), box-shadow .25s; }
+.more .ic { box-sizing: border-box; width: 32px; height: 32px; padding: 7px; border-radius: 50%; background: var(--c); color: var(--on-accent); }
+.more:hover { transform: translateY(-2px); border-color: var(--c); background: var(--c); color: var(--on-accent); box-shadow: 0 12px 24px -14px var(--c); }
+.more:hover .ic { background: var(--on-accent); color: var(--c); }
+.more:active { transform: scale(.97); }
+
+.disc { --ct: color-mix(in srgb, var(--c) 62%, var(--ink)); }
+@include m.min(900px) { .disc-main { position: sticky; top: 96px; align-self: start; } }
+.tree { min-width: 0; }
+.branches { position: relative; display: grid; gap: 22px; list-style: none; margin: 0; padding: 0; padding-inline-start: 40px; }
+.branches::before { content: ''; position: absolute; inset-inline-start: 11px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px; background: linear-gradient(var(--c), var(--line)); transform-origin: top; transition: transform .9s var(--ease); }
+.js .branches:not(.in)::before { transform: scaleY(0); }
+.branch { position: relative; }
+.b-title { position: relative; display: flex; align-items: center; min-height: 24px; margin: 0 0 6px; color: var(--ink); font: 700 1.05rem/1.3 var(--display); }
+.b-title .tile { position: absolute; inset-inline-start: -40px; top: 50%; transform: translateY(-50%); background-color: var(--paper); background-image: linear-gradient(color-mix(in srgb, var(--c) 14%, transparent), color-mix(in srgb, var(--c) 14%, transparent)); }
+.b-title::before { content: ''; position: absolute; inset-inline-start: -16px; top: 50%; width: 12px; height: 2px; background: var(--line); transform: translateY(-1px); }
+.branch.ai .b-title { color: var(--ct); }
+.branch.ai .b-title .tile { background-image: none; background-color: var(--c); color: var(--on-accent); }
+.leaves { list-style: none; margin: 0; padding: 0; }
+.leaves li { position: relative; padding-block: 5px; padding-inline-start: 26px; color: var(--ink); font-size: .98rem; line-height: 1.5; }
+.leaves li strong { color: var(--ct); }
+.leaves li::before { content: ''; position: absolute; inset-inline-start: 5px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.leaves li:first-child::before { top: -8px; }
+.leaves li:last-child::before { bottom: 50%; }
+.leaves li::after { content: ''; position: absolute; inset-inline-start: 5px; top: 50%; width: 14px; height: 2px; background: var(--line); transform: translateY(-1px); transition: background .2s, width .25s var(--ease); }
+.branch.ai .leaves li::before, .branch.ai .leaves li::after { background: color-mix(in srgb, var(--c) 55%, var(--line)); }
+@include m.hover { .leaves li:hover::after { width: 18px; background: var(--c); } }
+@include m.reduced-motion { .js .branches:not(.in)::before { transform: none; } }

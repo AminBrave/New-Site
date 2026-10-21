@@ -1,0 +1,20 @@
+// Design tokens (CSS custom properties, light + dark)
+
+:root {
+  --paper: #f4f6f8; --surface: #ffffff; --ink: #111a22; --muted: #56626d; --line: #d0d7dd;
+  --accent: #2447f5; --on-accent: #ffffff; --mark: #f7e463;
+  --c-ux: #2447f5; --c-woo: #6d33e0; --c-content: #0b8a7b;
+  --display: 'Bricolage Grotesque Variable', 'Segoe UI', system-ui, sans-serif;
+  --body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --paper: #0f161c; --surface: #16202a; --ink: #eef2f5; --muted: #a4afb9; --line: #2a3640;
+  --accent: #8aa0ff; --on-accent: #0f161c; --mark: #5a5018;
+  --c-ux: #8aa0ff; --c-woo: #b49cff; --c-content: #52d6c4;
+  color-scheme: dark;
+}
+:lang(fa) { --display: 'Vazirmatn', Tahoma, system-ui, sans-serif; --body: 'Vazirmatn', Tahoma, system-ui, sans-serif; }
+:lang(fa) body { line-height: 1.9; }
+:lang(fa) * { letter-spacing: 0 !important; }

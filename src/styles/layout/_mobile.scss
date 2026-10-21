@@ -1,0 +1,25 @@
+// Floating menu on phones, tap labels, section icon loops
+@use '../abstracts/mixins' as m;
+
+@include m.max(700px) {
+  .menu-dlg { inset-block: 12px; height: calc(100vh - 24px); height: calc(100dvh - 24px); width: calc(100% - 24px); margin-inline-end: 12px; border-radius: 22px; }
+}
+.dots a.tip .lab { opacity: 1; transform: none; }
+
+.tile { border: 1px solid transparent; transition: border-color .4s, box-shadow .5s; }
+.sh .tile { width: 56px; height: 56px; border-radius: 16px; }
+.sh .tile .ic { width: 28px; height: 28px; }
+@keyframes sweep-loop {
+  0% { opacity: 1; background-position: 160% 0; }
+  26% { opacity: 1; background-position: -60% 0; }
+  27%, 100% { opacity: 0; background-position: -60% 0; }
+}
+@keyframes ring-loop {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c, var(--accent)) 45%, transparent), 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
+  36%, 100% { box-shadow: 0 0 0 18px transparent, 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
+}
+.is-active .sh .tile { border-color: color-mix(in srgb, var(--c, var(--accent)) 60%, transparent); box-shadow: 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); animation: ring-loop 5s ease-out .1s infinite; }
+.is-active .sh .tile::after { --shine: rgba(255, 255, 255, .9); animation: sweep-loop 5s var(--ease) .2s infinite; }
+.is-active .tile.sub { border-color: color-mix(in srgb, var(--c, var(--accent)) 35%, transparent); }
+.is-active .tile.sub::after { --shine: rgba(255, 255, 255, .5); animation: sweep-loop 5s var(--ease) calc(.5s + var(--k, 0) * 140ms) infinite; }
+.rel-btn .logo-tile { flex: none; }
