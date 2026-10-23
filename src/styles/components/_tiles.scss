@@ -1,19 +1,56 @@
 // Icon tiles and shine
+.tile {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--c, var(--accent)) 14%, transparent);
+  color: var(--ct, var(--c, var(--accent)));
+  &.lg {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 14px;
+    border-radius: 16px;
+  }
+  &.sm { width: 36px; height: 36px; border-radius: 11px; }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(115deg, transparent 35%, var(--shine, rgba(255, 255, 255, .8)) 50%, transparent 65%) no-repeat;
+    background-size: 250% 100%;
+    background-position: 160% 0;
+  }
+}
 
-.tile { position: relative; flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: color-mix(in srgb, var(--c, var(--accent)) 14%, transparent); color: var(--ct, var(--c, var(--accent))); }
-.tile.lg { width: 58px; height: 58px; margin-bottom: 14px; border-radius: 16px; }
-.tile.sm { width: 36px; height: 36px; border-radius: 11px; }
-.tile::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; background: linear-gradient(115deg, transparent 35%, var(--shine, rgba(255, 255, 255, .8)) 50%, transparent 65%) no-repeat; background-size: 250% 100%; background-position: 160% 0; }
 @keyframes sweep { 0% { opacity: 1; background-position: 160% 0; } 100% { opacity: 1; background-position: -60% 0; } }
 @keyframes ring {
   0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c, var(--accent)) 45%, transparent), 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
   100% { box-shadow: 0 0 0 16px transparent, 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
 }
+
 /* main section icon: stronger shine + soft glow while its section is active */
-.is-active .sh .tile { box-shadow: 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); animation: ring 1.9s ease-out .1s both; }
-.is-active .sh .tile::after { --shine: rgba(255, 255, 255, .9); animation: sweep 1.3s var(--ease) .2s both; }
+.is-active .sh .tile {
+  box-shadow: 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent);
+  animation: ring 1.9s ease-out .1s both;
+  &::after { --shine: rgba(255, 255, 255, .9); animation: sweep 1.3s var(--ease) .2s both; }
+}
+
 /* sub icons: lighter shine, staggered */
-.is-active .tile.sub { box-shadow: 0 0 12px -5px color-mix(in srgb, var(--c, var(--accent)) 55%, transparent); transition: box-shadow .5s; }
-.is-active .tile.sub::after { --shine: rgba(255, 255, 255, .5); animation: sweep 1.1s var(--ease) calc(.5s + var(--k, 0) * 140ms) both; }
+.is-active .tile.sub {
+  box-shadow: 0 0 12px -5px color-mix(in srgb, var(--c, var(--accent)) 55%, transparent);
+  transition: box-shadow .5s;
+  &::after {
+    --shine: rgba(255, 255, 255, .5);
+    animation: sweep 1.1s var(--ease) calc(.5s + var(--k, 0) * 140ms) both;
+  }
+}
+
 .is-active .xp .dot { box-shadow: 0 0 10px -4px var(--accent); }
 .case-dlg[open] .tile::after { --shine: rgba(255, 255, 255, .55); animation: sweep 1.1s var(--ease) .45s both; }

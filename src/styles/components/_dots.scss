@@ -1,14 +1,66 @@
 // Vertical section dots
 @use '../abstracts/mixins' as m;
 
-.dots { position: fixed; inset-inline-end: 4px; top: 50%; z-index: 25; transform: translateY(-50%); }
-.dots ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
-.dots a { position: relative; display: grid; place-items: center; width: 32px; height: 32px; text-decoration: none; }
-.pip { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--muted); transition: transform .3s var(--ease), background .2s, border-color .2s; }
-.dots a:hover .pip { border-color: var(--accent); transform: scale(1.3); }
-.dots a[aria-current='true'] .pip { background: var(--accent); border-color: var(--accent); transform: scale(1.45); }
-.lab { position: absolute; inset-inline-end: 100%; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: var(--ink); color: var(--paper); font: 500 .85rem var(--body); white-space: nowrap; opacity: 0; transform: translateX(8px); pointer-events: none; transition: opacity .2s, transform .25s var(--ease); }
-[dir='rtl'] .lab { transform: translateX(-8px); }
-.dots a:focus-visible .lab { opacity: 1; transform: none; }
-@include m.hover { .dots a:hover .lab { opacity: 1; transform: none; } }
-@include m.min(900px) { .dots { inset-inline-end: 16px; } .dots a[aria-current='true'] .lab { opacity: 1; transform: none; } }
+.dots {
+  position: fixed;
+  inset-inline-end: 4px;
+  top: 50%;
+  z-index: 25;
+  transform: translateY(-50%);
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    text-decoration: none;
+    &:hover .pip { border-color: var(--accent); transform: scale(1.3); }
+    &[aria-current='true'] .pip { background: var(--accent); border-color: var(--accent); transform: scale(1.45); }
+    &:focus-visible .lab { opacity: 1; transform: none; }
+  }
+}
+
+.pip {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+  transition: transform .3s var(--ease), background .2s, border-color .2s;
+}
+
+.lab {
+  position: absolute;
+  inset-inline-end: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 500 .85rem var(--body);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(8px);
+  pointer-events: none;
+  transition: opacity .2s, transform .25s var(--ease);
+  [dir='rtl'] & { transform: translateX(-8px); }
+}
+
+@include m.hover {
+  .dots a:hover .lab { opacity: 1; transform: none; }
+}
+
+@include m.min(900px) {
+  .dots {
+    inset-inline-end: 16px;
+    a[aria-current='true'] .lab { opacity: 1; transform: none; }
+  }
+}

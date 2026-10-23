@@ -1,10 +1,26 @@
 // Device tiers (data-perf = high | medium | low)
-
 /* medium: keep the design, drop the costly effects (blur, endless hero float). */
-[data-perf='medium'] .bar, [data-perf='medium'] .dlg-bar, [data-perf='low'] .bar, [data-perf='low'] .dlg-bar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
-[data-perf='medium'] .menu-dlg::backdrop, [data-perf='medium'] .case-dlg::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
-[data-perf='low'] .menu-dlg::backdrop, [data-perf='low'] .case-dlg::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
-.js[data-perf='medium'] .hero.run .art .card { animation: card-in .9s var(--ease) backwards; animation-delay: calc(var(--i) * 160ms + 350ms); }
+[data-perf='medium'] .bar, [data-perf='medium'] .dlg-bar, [data-perf='low'] .bar, [data-perf='low'] .dlg-bar {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--paper);
+}
+[data-perf='medium'] .menu-dlg::backdrop, [data-perf='medium'] .case-dlg::backdrop {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+[data-perf='low'] .menu-dlg::backdrop, [data-perf='low'] .case-dlg::backdrop {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.js[data-perf='medium'] .hero.run .art .card {
+  animation: card-in .9s var(--ease) backwards;
+  animation-delay: calc(var(--i) * 160ms + 350ms);
+}
 /* low: no animation and no glow. Content and layout stay identical. */
-[data-perf='low'] *, [data-perf='low'] *::before, [data-perf='low'] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+[data-perf='low'] *, [data-perf='low'] *::before, [data-perf='low'] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
 [data-perf='low'] :is(.tile, .case, .more, .btn, .chips li) { box-shadow: none !important; }

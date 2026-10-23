@@ -1,28 +1,64 @@
 // Process: one seamless progress bar
 @use '../abstracts/mixins' as m;
 
-.steps { --gap: 24px; list-style: none; margin: 0; padding: 0; }
-.steps li { position: relative; --seg: clamp(0, calc(var(--p, 0) * 4 - var(--i, 0)), 1); }
-.steps li::before, .steps li::after { content: ''; position: absolute; border-radius: 4px; }
-.steps li::before { background: var(--line); }
-.steps li::after { background: var(--accent); }
-.steps li:last-child::before, .steps li:last-child::after { display: none; }
-.steps .num { position: absolute; top: 0; inset-inline-start: 0; z-index: 2; }
-.steps .tile { background-color: var(--paper); background-image: linear-gradient(color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--accent) 14%, transparent)); transition: background-color .4s, color .4s; }
-.steps li.done .tile { background-color: var(--accent); background-image: none; color: var(--on-accent); }
-.steps strong { display: block; font: 700 1.2rem var(--display); }
-.steps .n { color: var(--accent); }
-.steps .txt { color: var(--muted); font-size: .98rem; }
-@include m.max(759px) {
-  .steps li { padding-inline-start: 58px; padding-bottom: 30px; min-height: 66px; }
-  .steps li:last-child { padding-bottom: 0; }
-  .steps li::before, .steps li::after { top: 18px; inset-inline-start: 16px; width: 4px; height: 100%; }
-  .steps li::after { transform: scaleY(var(--seg)); transform-origin: top; transition: transform .15s linear; }
+.steps {
+  --gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  li {
+    position: relative; --seg: clamp(0, calc(var(--p, 0) * 4 - var(--i, 0)), 1);
+    &::before, &::after { content: ''; position: absolute; border-radius: 4px; }
+    &::before { background: var(--line); }
+    &::after { background: var(--accent); }
+    &:last-child::before, &:last-child::after { display: none; }
+    &.done .tile { background-color: var(--accent); background-image: none; color: var(--on-accent); }
+  }
+  .num {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    z-index: 2;
+  }
+  .tile {
+    background-color: var(--paper);
+    background-image: linear-gradient(color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--accent) 14%, transparent));
+    transition: background-color .4s, color .4s;
+  }
+  strong { display: block; font: 700 1.2rem var(--display); }
+  .n { color: var(--accent); }
+  .txt { color: var(--muted); font-size: .98rem; }
 }
+
+@include m.max(759px) {
+  .steps li {
+    padding-inline-start: 58px; padding-bottom: 30px; min-height: 66px;
+    &:last-child { padding-bottom: 0; }
+    &::before, &::after {
+      top: 18px;
+      inset-inline-start: 16px;
+      width: 4px;
+      height: 100%;
+    }
+    &::after { transform: scaleY(var(--seg)); transform-origin: top; transition: transform .15s linear; }
+  }
+}
+
 @include m.min(760px) {
-  .steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0 var(--gap); }
-  .steps li { padding-top: 56px; }
-  .steps li::before, .steps li::after { top: 16px; inset-inline-start: 18px; height: 4px; width: calc(100% + var(--gap)); }
-  .steps li::after { transform: scaleX(var(--seg)); transform-origin: left; transition: transform .15s linear; }
-  [dir='rtl'] .steps li::after { transform-origin: right; }
+  .steps {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0 var(--gap);
+    li {
+      padding-top: 56px;
+      &::before, &::after {
+        top: 16px;
+        inset-inline-start: 18px;
+        height: 4px;
+        width: calc(100% + var(--gap));
+      }
+      &::after {
+        transform: scaleX(var(--seg)); transform-origin: left; transition: transform .15s linear;
+        [dir='rtl'] & { transform-origin: right; }
+      }
+    }
+  }
 }

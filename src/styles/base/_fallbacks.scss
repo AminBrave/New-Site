@@ -1,6 +1,6 @@
 // Compatibility fallbacks (no color-mix, aspect-ratio, dialog)
-
 /* Browsers without color-mix() (Chrome < 111, Safari < 16.2, Firefox < 113): solid colors instead of tints. */
+
 @supports not (color: color-mix(in srgb, red 50%, blue)) {
   .case, .case-dlg, .disc, .more { --ct: var(--ink); }
   .bar, .dlg-bar { background: var(--paper); }
@@ -8,7 +8,11 @@
   .hero::after { display: none; }
   .art .tint { fill: var(--line); }
   .tile, .tags li { background: var(--line); }
-  .tile.sub, .is-active .sh .tile, .is-active .tile.sub { border-color: var(--line); box-shadow: none; animation: none; }
+  .tile.sub, .is-active .sh .tile, .is-active .tile.sub {
+    border-color: var(--line);
+    box-shadow: none;
+    animation: none;
+  }
   .tile::before, .logo-tile::before { background: none; }
   .steps .tile, .b-title .tile { background-image: none; background-color: var(--paper); }
   .branch.ai .b-title .tile { background-color: var(--c); }
@@ -19,11 +23,34 @@
   .ai-box { background: none; border-color: var(--line); }
   .quote { background: var(--surface); }
 }
-@supports not (aspect-ratio: 1) { .gallery img, .gallery .ph { height: 110px; } }
+
+@supports not (aspect-ratio: 1) {
+  .gallery img, .gallery .ph { height: 110px; }
+}
 
 /* <dialog> without showModal() (Safari < 15.4, Firefox < 98): the page script opens it as a fixed overlay. */
-.legacy-backdrop { position: fixed; inset: 0; z-index: 1000; background: rgba(8, 12, 16, .62); }
-.legacy-backdrop[hidden] { display: none; }
-dialog.legacy[open] { display: block; position: fixed; z-index: 1001; top: 50%; left: 50%; margin: 0; transform: translate(-50%, -50%); }
-dialog.menu-dlg.legacy[open] { top: 0; right: 0; left: auto; transform: none; }
-[dir='rtl'] dialog.menu-dlg.legacy[open] { right: auto; left: 0; }
+.legacy-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(8, 12, 16, .62);
+  &[hidden] { display: none; }
+}
+
+dialog.legacy[open] {
+  display: block;
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
+dialog.menu-dlg.legacy[open] {
+  top: 0;
+  right: 0;
+  left: auto;
+  transform: none;
+  [dir='rtl'] & { right: auto; left: 0; }
+}

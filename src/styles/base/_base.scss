@@ -2,21 +2,64 @@
 @use '../abstracts/mixins' as m;
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
-html.modal-open { overflow: hidden; }
+
+html {
+  scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%;
+  &.modal-open { overflow: hidden; }
+}
+
 dialog:not([open]) { display: none; }
-body { margin: 0; overflow-x: hidden; overflow-x: clip; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.65 var(--body); transition: background .3s, color .3s; }
-@include m.max(480px) { body { font-size: 1rem; } }
+body {
+  margin: 0;
+  overflow-x: hidden;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.65 var(--body);
+  transition: background .3s, color .3s;
+}
+
+@include m.max(480px) {
+  body { font-size: 1rem; }
+}
+
 a { color: var(--accent); text-underline-offset: 3px; }
 strong, b { font-weight: 700; }
 p strong, li strong, .lead strong { color: var(--ink); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 [tabindex='-1']:focus { outline: none; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.skip { position: absolute; inset-inline-start: -999px; top: 8px; z-index: 60; padding: 8px 14px; border-radius: 6px; background: var(--ink); color: var(--paper); }
-.skip:focus { inset-inline-start: 8px; }
-.wrap { max-width: 1040px; margin-inline: auto; padding-inline: 20px 44px; }
-@include m.min(1180px) { .wrap { padding-inline: 24px; } }
-.wrap.bar-in, .wrap.foot { padding-inline: 20px; }
-@include m.min(1180px) { .wrap.bar-in, .wrap.foot { padding-inline: 24px; } }
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  inset-inline-start: -999px;
+  top: 8px;
+  z-index: 60;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  &:focus { inset-inline-start: 8px; }
+}
+
+.wrap {
+  max-width: 1040px; margin-inline: auto; padding-inline: 20px 44px;
+  &.bar-in, &.foot { padding-inline: 20px; }
+}
+
+@include m.min(1180px) {
+  .wrap { padding-inline: 24px; }
+}
+
+@include m.min(1180px) {
+  .wrap.bar-in, .wrap.foot { padding-inline: 24px; }
+}
+
 .ic { flex: none; }

@@ -4,10 +4,14 @@
 @include m.reduced-motion {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js [data-reveal]:not(.in), .js [data-stagger]:not(.in) > *, .js .hero:not(.run) :is(.w, .lead, .roles, .btns), .js .hero:not(.run) .art .card { opacity: 1; }
+  .js [data-reveal]:not(.in), .js [data-stagger]:not(.in) > *, .js .hero:not(.run) :is(.w, .lead, .roles, .btns), .js .hero:not(.run) .art .card {
+    opacity: 1;
+  }
   .js .hero:not(.run) .mark { background-size: 100% 42%; }
 }
+
 @include m.forced-colors {
   .tile, .btn, .chips li, .case, .menu-btn, .switch { border: 1px solid CanvasText; }
-  .pip { border-color: CanvasText; } .dots a[aria-current='true'] .pip { background: Highlight; }
+  .pip { border-color: CanvasText; }
+  .dots a[aria-current='true'] .pip { background: Highlight; }
 }

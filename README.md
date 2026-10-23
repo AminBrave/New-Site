@@ -67,10 +67,12 @@ Adaptive effects (`data-perf` on `<html>`) use browser capability signals and a 
 
 Styles live in `src/styles` and are compiled by Astro/Vite (`sass` is a dev dependency). `main.scss` is the single entry point and lists the partials in cascade order:
 
-- `abstracts/` mixins (`m.min()`, `m.max()`, `m.hover`, `m.reduced-motion`, `m.forced-colors`)
+- `abstracts/` mixins: media queries (`m.min()`, `m.max()`, `m.hover`, `m.reduced-motion`, `m.forced-colors`) and `fonts.face()` for `@font-face`
 - `base/` tokens (CSS custom properties for light/dark), reset, accessibility, fallbacks, device tiers, print
 - `layout/` header, section wrappers, responsive overrides
 - `components/` menu, dots, buttons, tiles, dialogs, effects
 - `sections/` hero, skills, process, work, resume, contact
+
+Rules are written as a tree: states, pseudo-elements, modifiers, descendants and RTL/theme contexts are nested under their block with `&` (for example `[dir='rtl'] &`). Rules are only nested when this cannot change which declaration wins in the cascade, so partials keep unrelated rules flat and `@media` blocks stay at the end of the rules they override.
 
 Theming stays on CSS custom properties (`--accent`, `--paper`, ...), so the dark mode switch works at runtime. Add a partial, then `@use` it in `main.scss` at the right place in the order.
