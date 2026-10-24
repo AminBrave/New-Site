@@ -19,6 +19,8 @@ const WEIGHT = /^\d{3}( \d{3})?$/;
 const UNICODE_RANGE = /^U\+[0-9A-Fa-f?]{1,6}(-[0-9A-Fa-f]{1,6})?(,U\+[0-9A-Fa-f?]{1,6}(-[0-9A-Fa-f]{1,6})?)*$/;
 const FAVICON_PATH = /^[MmLlHhVvCcSsQqTtAaZz0-9 .,eE-]{1,300}$/;
 
+export const isValidLabel = (v: string): boolean => LABEL.test(v);
+
 export type GuardResult = { ok: true; theme: Theme } | { ok: false; problems: string[] };
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);

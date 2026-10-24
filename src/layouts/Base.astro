@@ -2,7 +2,7 @@
 import '../styles/main.scss';
 import type { Lang } from '../data/types';
 import { buildThemeAssets } from '../theme/css';
-import { activePresetName, presets, theme } from '../theme';
+import { activePresetName, builtinPresets, presets, theme } from '../theme';
 import { assertThemes } from '../theme/validate';
 import { site } from '../config/site.config';
 
@@ -49,7 +49,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
     <link rel="icon" href={assets.favicon} />
     {assets.preload.map((href) => <link rel="preload" as="font" type="font/woff2" href={href} crossorigin="anonymous" />)}
     <style is:inline set:html={assets.css} />
-    {dev && <script is:inline>{`try{var d=document.documentElement,k=['preset','hero','work'];k.forEach(function(n){var v=localStorage.getItem('lab-'+n);if(v)d.setAttribute('data-'+n,v)})}catch(e){}`}</script>}
+    {dev && <script is:inline>{`try{var d=document.documentElement,k=['preset','hero','work'];k.forEach(function(n){var v=localStorage.getItem('lab-'+n);if(v)d.setAttribute('data-'+n,v)});var c=localStorage.getItem('lab-live-css');if(c){var s=document.createElement('style');s.id='theme-lab-live';s.textContent=c;document.head.appendChild(s);d.setAttribute('data-lab-live','')}}catch(e){}`}</script>}
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <script is:inline>
       /* Runs before first paint. ES5 on purpose: it must work in every browser. */
@@ -81,6 +81,6 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
   </head>
   <body>
     <slot />
-    {ThemeLab && <ThemeLab presets={Object.values(presets).map((p) => ({ name: p.name, label: p.label }))} active={activePresetName} />}
+    {ThemeLab && <ThemeLab presets={Object.values(presets)} active={activePresetName} builtin={[...builtinPresets]} lang={lang} />}
   </body>
 </html>
