@@ -10,7 +10,7 @@
     "check": "astro check"
   },
   "dependencies": {
-    "astro": "^7.4.0"
+    "astro": "^7.4.1"
   },
   "engines": {
     "node": ">=22.22.0"
