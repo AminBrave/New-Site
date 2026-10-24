@@ -32,7 +32,7 @@
   height: 9px;
   border-radius: 50%;
   border: 2px solid var(--muted);
-  transition: transform .3s var(--ease), background .2s, border-color .2s;
+  transition: transform var(--dur-mid) var(--ease), background var(--dur-fast), border-color var(--dur-fast);
 }
 
 .lab {
@@ -42,15 +42,15 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--ink);
   color: var(--paper);
-  font: 500 .85rem var(--body);
+  font: 500 var(--fs-xs) var(--body);
   white-space: nowrap;
   opacity: 0;
   transform: translateX(8px);
   pointer-events: none;
-  transition: opacity .2s, transform .25s var(--ease);
+  transition: opacity var(--dur-fast), transform var(--dur-base) var(--ease);
   [dir='rtl'] & { transform: translateX(-8px); }
 }
 

@@ -8,7 +8,7 @@
   padding: 0;
   li {
     position: relative; --seg: clamp(0, calc(var(--p, 0) * 4 - var(--i, 0)), 1);
-    &::before, &::after { content: ''; position: absolute; border-radius: 4px; }
+    &::before, &::after { content: ''; position: absolute; border-radius: var(--radius-xxs); }
     &::before { background: var(--line); }
     &::after { background: var(--accent); }
     &:last-child::before, &:last-child::after { display: none; }
@@ -23,11 +23,11 @@
   .tile {
     background-color: var(--paper);
     background-image: linear-gradient(color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--accent) 14%, transparent));
-    transition: background-color .4s, color .4s;
+    transition: background-color var(--dur-slow), color var(--dur-slow);
   }
-  strong { display: block; font: 700 1.2rem var(--display); }
+  strong { display: block; font: 700 var(--fs-xl) var(--display); }
   .n { color: var(--accent); }
-  .txt { color: var(--muted); font-size: .98rem; }
+  .txt { color: var(--muted); font-size: var(--fs-base); }
 }
 
 @include m.max(759px) {
@@ -40,7 +40,7 @@
       width: 4px;
       height: 100%;
     }
-    &::after { transform: scaleY(var(--seg)); transform-origin: top; transition: transform .15s linear; }
+    &::after { transform: scaleY(var(--seg)); transform-origin: top; transition: transform var(--dur-fast) linear; }
   }
 }
 
@@ -56,7 +56,7 @@
         width: calc(100% + var(--gap));
       }
       &::after {
-        transform: scaleX(var(--seg)); transform-origin: left; transition: transform .15s linear;
+        transform: scaleX(var(--seg)); transform-origin: left; transition: transform var(--dur-fast) linear;
         [dir='rtl'] & { transform-origin: right; }
       }
     }

@@ -1,0 +1,20 @@
+// Work card layout variants, switched by <html data-work="...">. Default ("grid") needs no rules here.
+@use '../abstracts/mixins' as m;
+
+[data-work='list'] {
+  .cases { grid-template-columns: 1fr; }
+
+  @include m.min(760px) {
+    .case {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto;
+      grid-template-areas: 'head sum open' 'tags sum open';
+      align-items: center;
+      gap: 12px 28px;
+    }
+    .case-head { grid-area: head; }
+    .tags { grid-area: tags; }
+    .case-sum { grid-area: sum; margin: 0; }
+    .open { grid-area: open; }
+  }
+}

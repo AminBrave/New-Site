@@ -8,15 +8,15 @@
     height: calc(100dvh - 24px);
     width: calc(100% - 24px);
     margin-inline-end: 12px;
-    border-radius: 22px;
+    border-radius: var(--radius-xl);
   }
 }
 
 .dots a.tip .lab { opacity: 1; transform: none; }
-.tile { border: 1px solid transparent; transition: border-color .4s, box-shadow .5s; }
+.tile { border: 1px solid transparent; transition: border-color var(--dur-slow), box-shadow var(--dur-slower); }
 
 .sh .tile {
-  width: 56px; height: 56px; border-radius: 16px;
+  width: 56px; height: 56px; border-radius: var(--radius-lg);
   .ic { width: 28px; height: 28px; }
 }
 
@@ -34,13 +34,13 @@
   border-color: color-mix(in srgb, var(--c, var(--accent)) 60%, transparent);
   box-shadow: 0 0 22px -6px color-mix(in srgb, var(--c, var(--accent)) 70%, transparent);
   animation: ring-loop 5s ease-out .1s infinite;
-  &::after { --shine: rgba(255, 255, 255, .9); animation: sweep-loop 5s var(--ease) .2s infinite; }
+  &::after { --shine: rgb(var(--glint-rgb) / .9); animation: sweep-loop 5s var(--ease) .2s infinite; }
 }
 
 .is-active .tile.sub {
   border-color: color-mix(in srgb, var(--c, var(--accent)) 35%, transparent);
   &::after {
-    --shine: rgba(255, 255, 255, .5);
+    --shine: rgb(var(--glint-rgb) / .5);
     animation: sweep-loop 5s var(--ease) calc(.5s + var(--k, 0) * 140ms) infinite;
   }
 }

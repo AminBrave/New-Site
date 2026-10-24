@@ -3,6 +3,7 @@ import Icon from './Icon.astro';
 import { content } from '../data/content';
 import type { IconName } from '../lib/icons';
 import type { Lang, SectionId } from '../data/types';
+import { site } from '../config/site.config';
 
 interface Props {
   lang: Lang;
@@ -16,13 +17,13 @@ interface Props {
 const { lang, t, urls, fmt, ids, navIcons } = Astro.props;
 ---
 
-  <nav class="dots" aria-label={t.ui.sections}>
+  {site.features.sectionDots && <nav class="dots" aria-label={t.ui.sections}>
     <ol>
       {ids.map((id, i) => (
         <li><a href={`#${id}`} aria-current={i === 0 ? 'true' : undefined}><span class="lab"><Icon name={navIcons[id]} size={14} />{t.ui.nav[id]}</span><span class="pip"></span></a></li>
       ))}
     </ol>
-  </nav>
+  </nav>}
 
   <dialog class="menu-dlg" id="menu" aria-label={t.ui.menuTitle}>
     <div class="menu-in">
@@ -45,12 +46,14 @@ const { lang, t, urls, fmt, ids, navIcons } = Astro.props;
             <a href={urls.fa} lang="fa" hreflang="fa" aria-current={lang === 'fa' ? 'true' : undefined} aria-label="فارسی">FA</a>
           </nav>
         </div>
+        {site.features.themeToggle && (
         <div class="set-row">
           <span class="set-l" id="theme-l"><Icon name="moon" size={18} />{t.ui.themeLabel}</span>
           <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="theme-l" data-theme-toggle>
             <span class="knob"><Icon name="sun" size={14} class="k-sun" /><Icon name="moon" size={14} class="k-moon" /></span>
           </button>
         </div>
+        )}
       </div>
       <div class="menu-cta">
         <a class="btn primary" href={`mailto:${t.email}`}><Icon name="mail" size={18} />{t.ui.ctaMail}</a>

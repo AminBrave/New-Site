@@ -663,9 +663,9 @@ export const content: Record<Lang, Locale> = {
 
 // Images and links shared by both languages. Paths are relative to /public (or use full https:// URLs).
 export const workShared: Record<string, WorkShared> = {
-  'store-redesign': { logo: '', cover: '', color: '#2447f5', url: '', gallery: [] },
-  'custom-checkout': { logo: '', cover: '', color: '#6d33e0', url: '', gallery: [] },
-  'content-strategy': { logo: '', cover: '', color: '#0b8a7b', url: '', gallery: [] },
+  'store-redesign': { logo: '', cover: '', color: 'var(--fill-ux)', url: '', gallery: [] },
+  'custom-checkout': { logo: '', cover: '', color: 'var(--fill-woo)', url: '', gallery: [] },
+  'content-strategy': { logo: '', cover: '', color: 'var(--fill-content)', url: '', gallery: [] },
 };
 
 // Validate cross-record relationships when Astro imports this module during a build.

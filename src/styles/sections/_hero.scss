@@ -14,8 +14,8 @@
     opacity: .6;
     background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
     background-size: 32px 32px;
-    -webkit-mask-image: linear-gradient(to bottom, #000 20%, transparent 95%);
-    mask-image: linear-gradient(to bottom, #000 20%, transparent 95%);
+    -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 95%);
+    mask-image: linear-gradient(to bottom, black 20%, transparent 95%);
   }
   &::after {
     content: '';
@@ -27,7 +27,7 @@
   h1 {
     margin: 0 0 24px;
     max-width: 16ch;
-    font: 700 clamp(2.3rem, 7.2vw, 4.2rem)/1.05 var(--display);
+    font: 700 var(--fs-display)/1.05 var(--display);
     letter-spacing: -0.02em;
   }
 }
@@ -81,12 +81,12 @@
     min-height: 44px;
     padding: 0 16px;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--surface);
     color: var(--ink);
     font-weight: 500;
     text-decoration: none;
-    transition: border-color .2s, transform .2s var(--ease);
+    transition: border-color var(--dur-fast), transform var(--dur-fast) var(--ease);
     &:hover { border-color: var(--c); }
     &:active { transform: scale(.96); }
   }

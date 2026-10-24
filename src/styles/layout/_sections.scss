@@ -1,13 +1,13 @@
 // Section wrappers, headings, reveal
 @use '../abstracts/mixins' as m;
 
-section[data-section]:not(.hero) { padding: 64px 0; border-top: 1px solid var(--line); }
+section[data-section]:not(.hero) { padding: var(--section-y) 0; border-top: 1px solid var(--line); }
 
 @include m.max(600px) {
-  section[data-section]:not(.hero) { padding: 48px 0; }
+  section[data-section]:not(.hero) { padding: var(--section-y-sm) 0; }
 }
 
-h2 { margin: 0; font: 700 clamp(1.7rem, 5vw, 2.5rem)/1.2 var(--display); letter-spacing: -0.01em; }
+h2 { margin: 0; font: 700 var(--fs-h2)/1.2 var(--display); letter-spacing: -0.01em; }
 .sh {
   display: flex;
   align-items: center;

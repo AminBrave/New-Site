@@ -1,5 +1,4 @@
-// Entry point. Order matters (it is the cascade): tokens → base → layout/components → sections → fallbacks → print.
-@use 'base/tokens';
+// Entry point. Order matters (it is the cascade): base → layout/components → sections → fallbacks → print.
 @use 'base/base';
 @use 'layout/header';
 @use 'components/menu';
@@ -20,4 +19,6 @@
 @use 'base/fallbacks';
 @use 'base/perf-tiers';
 @use 'sections/resume';
+@use 'variants/hero' as hero-variants;
+@use 'variants/work' as work-variants;
 @use 'base/print';

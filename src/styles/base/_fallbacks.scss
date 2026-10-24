@@ -33,7 +33,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(8, 12, 16, .62);
+  background: var(--scrim);
   &[hidden] { display: none; }
 }
 

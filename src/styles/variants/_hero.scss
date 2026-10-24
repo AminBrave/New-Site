@@ -1,0 +1,10 @@
+// Hero layout variants, switched by <html data-hero="...">. Default ("split") needs no rules here.
+@use '../abstracts/mixins' as m;
+
+[data-hero='centered'] {
+  .hero-grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .hero-text { max-width: 46rem; }
+  h1, .lead { margin-inline: auto; }
+  .roles, .btns { justify-content: center; }
+  .art { width: 100%; max-width: 340px; }
+}

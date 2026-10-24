@@ -15,13 +15,13 @@ import { content, workShared } from '../data/content';
 import { resume } from '../data/resume';
 import type { IconName } from '../lib/icons';
 import type { DisciplineId, Lang, SectionId } from '../data/types';
+import { site } from '../config/site.config';
 
 interface Props {
   lang: Lang;
-  preload?: string[];
 }
 
-const { lang, preload } = Astro.props;
+const { lang } = Astro.props;
 const t = content[lang];
 const r = resume[lang];
 const root = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -31,18 +31,29 @@ const fmt = (n: number): string => n.toLocaleString(lang === 'fa' ? 'fa-IR' : 'e
 const src = (path: string): string => (/^(https?:)?\/\//.test(path) ? path : `${root}/${path.replace(/^\//, '')}`);
 const works = t.work.map((w) => ({ ...w, ...workShared[w.id] }));
 const meta: Record<DisciplineId, { icon: IconName; color: string }> = {
-  ux: { icon: 'ux', color: '#2447f5' },
-  woo: { icon: 'cart', color: '#6d33e0' },
-  content: { icon: 'content', color: '#0b8a7b' },
+  ux: { icon: 'ux', color: 'var(--fill-ux)' },
+  woo: { icon: 'cart', color: 'var(--fill-woo)' },
+  content: { icon: 'content', color: 'var(--fill-content)' },
 };
 const discs = t.disciplines.map((d) => ({ ...d, ...meta[d.id] }));
 const navIcons: Record<SectionId, IconName> = { top: 'home', skills: 'layers', process: 'route', work: 'briefcase', resume: 'file', contact: 'mail' };
-const ids: SectionId[] = ['top', 'skills', 'process', 'work', 'resume', 'contact'];
+const ids: SectionId[] = site.sections;
+const has = (id: SectionId): boolean => ids.includes(id);
+/** One entry per section: the component and its props. Order and visibility come from site.config.ts. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const registry: Record<SectionId, { Component: any; props: Record<string, unknown> }> = {
+  top: { Component: HeroSection, props: { t } },
+  skills: { Component: SkillsSection, props: { t, discs } },
+  process: { Component: ProcessSection, props: { t, fmt } },
+  work: { Component: WorkSection, props: { t, works } },
+  resume: { Component: ResumeSection, props: { t, r } },
+  contact: { Component: ContactSection, props: { t } },
+};
 const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
 ---
-<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls} name={t.name} jobTitle={t.title} preload={preload}>
+<Base lang={lang} title={`${t.name} | ${t.title}`} description={t.description} urls={urls} name={t.name} jobTitle={t.title}>
   <a class="skip" href="#main">{t.ui.skip}</a>
-  <div class="progress" aria-hidden="true"></div>
+  {site.features.progressBar && <div class="progress" aria-hidden="true"></div>}
 
   <header class="bar">
     <div class="wrap bar-in">
@@ -58,25 +69,14 @@ const year = fmt(new Date().getFullYear()).replace(/[,٬]/g, '');
   <Navigation lang={lang} t={t} urls={urls} fmt={fmt} ids={ids} navIcons={navIcons} />
 
   <main id="main">
-    <HeroSection t={t} />
-
-    <SkillsSection t={t} discs={discs} />
-
-    <ProcessSection t={t} fmt={fmt} />
-
-    <WorkSection t={t} works={works} />
-
-    <ResumeSection t={t} r={r} />
-
-    <ContactSection t={t} />
-
+    {ids.map((id) => { const { Component, props } = registry[id]; return <Component {...props} />; })}
   </main>
 
-  <SkillDialogs t={t} discs={discs} works={works} fmt={fmt} />
+  {has('skills') && <SkillDialogs t={t} discs={discs} works={has('work') ? works : []} fmt={fmt} />}
 
-  <WorkDialogs t={t} works={works} fmt={fmt} src={src} />
+  {has('work') && <WorkDialogs t={t} works={works} fmt={fmt} src={src} />}
 
-  <ResumeDialog t={t} r={r} />
+  {has('resume') && <ResumeDialog t={t} r={r} />}
 
   <footer><div class="wrap foot"><span>© {year} {t.name}</span><a class="topbtn" href="#top"><Icon name="up" size={16} />{t.ui.backTop}</a></div></footer>
 </Base>

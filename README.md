@@ -45,7 +45,7 @@ Run `npm run build` without the GitHub Pages `ASTRO_BASE` setting, then upload t
 
 ## Fonts
 
-Fonts are bundled in `src/assets/fonts` and declared in `src/styles/fonts-en.scss` and `src/styles/fonts-fa.scss`: Bricolage Grotesque and IBM Plex Sans for English, Vazirmatn for Persian. No external font requests or font packages are required.
+Fonts are bundled in `src/assets/fonts` and declared per theme in `src/theme/presets` (files registered in `src/theme/font-files.ts`): Bricolage Grotesque and IBM Plex Sans for English, Vazirmatn for Persian. No external font requests or font packages are required.
 
 ## Browser support and performance
 
@@ -63,16 +63,21 @@ Adaptive effects (`data-perf` on `<html>`) use browser capability signals and a 
 
 **cPanel:** `public/.htaccess` enables compression, long caching for hashed files, and basic security headers. GitHub Pages ignores this file. Fonts are preloaded and CSS is inlined.
 
-## Styles (SCSS)
+## Styles and theming
 
-Styles live in `src/styles` and are compiled by Astro/Vite (`sass` is a dev dependency). `main.scss` is the single entry point and lists the partials in cascade order:
+Look and structure are configured in three places; see `docs/THEMING.md`.
 
-- `abstracts/` mixins: media queries (`m.min()`, `m.max()`, `m.hover`, `m.reduced-motion`, `m.forced-colors`) and `fonts.face()` for `@font-face`
-- `base/` tokens (CSS custom properties for light/dark), reset, accessibility, fallbacks, device tiers, print
-- `layout/` header, section wrappers, responsive overrides
+- `src/theme/`: the identity (colors, fonts, type scale, radius, shadows, motion, layout). Switch preset in `src/theme/index.ts`; preview with the dev-only Theme lab.
+- `src/config/site.config.ts`: section order and visibility, layout variants, optional features.
+- `src/data/`: all text.
+
+SCSS lives in `src/styles` (`main.scss` is the entry; partials are listed in cascade order):
+
+- `abstracts/` media-query mixins (`m.min()`, `m.max()`, `m.hover`, `m.reduced-motion`, `m.forced-colors`)
+- `base/` reset, accessibility, fallbacks, device tiers, print
+- `layout/` header, sections, responsive overrides
 - `components/` menu, dots, buttons, tiles, dialogs, effects
 - `sections/` hero, skills, process, work, resume, contact
+- `variants/` hero and work layout variants
 
-Rules are written as a tree: states, pseudo-elements, modifiers, descendants and RTL/theme contexts are nested under their block with `&` (for example `[dir='rtl'] &`). Rules are only nested when this cannot change which declaration wins in the cascade, so partials keep unrelated rules flat and `@media` blocks stay at the end of the rules they override.
-
-Theming stays on CSS custom properties (`--accent`, `--paper`, ...), so the dark mode switch works at runtime. Add a partial, then `@use` it in `main.scss` at the right place in the order.
+Rules are written as a tree with `&`. They only read theme custom properties (`var(--accent)`, `var(--radius-md)`, `var(--fs-sm)`, `var(--dur-base)`); `npm run lint:css` rejects raw values. `npm run verify` runs lint, theme check, type check and build.

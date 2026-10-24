@@ -3,6 +3,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+// Persian has no letter-spacing in connected script.
+:lang(fa) * { letter-spacing: 0 !important; }
+
 html {
   scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%;
   &.modal-open { overflow: hidden; }
@@ -15,18 +18,18 @@ body {
   overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
-  font: 400 1.0625rem/1.65 var(--body);
-  transition: background .3s, color .3s;
+  font: 400 var(--fs-lead)/var(--leading) var(--body);
+  transition: background var(--dur-mid), color var(--dur-mid);
 }
 
 @include m.max(480px) {
-  body { font-size: 1rem; }
+  body { font-size: var(--fs-base); }
 }
 
 a { color: var(--accent); text-underline-offset: 3px; }
 strong, b { font-weight: 700; }
 p strong, li strong, .lead strong { color: var(--ink); }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-xxs); }
 [tabindex='-1']:focus { outline: none; }
 .sr {
   position: absolute;
@@ -43,23 +46,23 @@ p strong, li strong, .lead strong { color: var(--ink); }
   top: 8px;
   z-index: 60;
   padding: 8px 14px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: var(--ink);
   color: var(--paper);
   &:focus { inset-inline-start: 8px; }
 }
 
 .wrap {
-  max-width: 1040px; margin-inline: auto; padding-inline: 20px 44px;
-  &.bar-in, &.foot { padding-inline: 20px; }
+  max-width: var(--wrap-max); margin-inline: auto; padding-inline: var(--gutter) var(--gutter-end);
+  &.bar-in, &.foot { padding-inline: var(--gutter); }
 }
 
 @include m.min(1180px) {
-  .wrap { padding-inline: 24px; }
+  .wrap { padding-inline: var(--gutter-wide); }
 }
 
 @include m.min(1180px) {
-  .wrap.bar-in, .wrap.foot { padding-inline: 24px; }
+  .wrap.bar-in, .wrap.foot { padding-inline: var(--gutter-wide); }
 }
 
 .ic { flex: none; }

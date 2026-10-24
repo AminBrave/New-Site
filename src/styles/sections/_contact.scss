@@ -42,7 +42,7 @@ footer {
   padding: 28px 0 48px;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: .95rem;
+  font-size: var(--fs-md);
 }
 .foot {
   display: flex;
@@ -59,13 +59,13 @@ footer {
   min-height: 44px;
   padding: 0 16px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--ink);
   text-decoration: none;
-  transition: border-color .2s;
+  transition: border-color var(--dur-fast);
   &:hover {
     border-color: var(--accent);
     .ic { transform: translateY(-3px); }
   }
-  .ic { transition: transform .25s var(--ease); }
+  .ic { transition: transform var(--dur-base) var(--ease); }
 }

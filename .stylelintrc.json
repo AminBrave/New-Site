@@ -1,0 +1,19 @@
+{
+  "customSyntax": "postcss-scss",
+  "rules": {
+    "color-no-hex": [true, { "message": "Use a theme token (var(--accent), var(--paper) ...). Colors live in src/theme/presets." }],
+    "function-disallowed-list": [["rgba", "hsl", "hsla", "hwb", "lab", "lch", "oklab", "oklch"], { "message": "Use a theme token or color-mix() on a token." }],
+    "declaration-property-value-disallowed-list": [
+      {
+        "/^border(-[a-z]+){0,2}-radius$/": ["/(^|\\s)\\d+(\\.\\d+)?(px|rem|em)\\b/"],
+        "/^(font-size)$/": ["/^\\d*\\.?\\d+(px|rem|em)$/"],
+        "/^transition(-duration)?$/": ["/(^|\\s)\\d*\\.?\\d+m?s\\b/"],
+        "/^(background|background-color|color|border-color|outline-color|fill|stroke)$/": ["/rgb\\(\\s*\\d/"]
+      },
+      { "message": "Use a theme token: --radius-*, --fs-*, --dur-*, or a color token." }
+    ]
+  },
+  "overrides": [
+    { "files": ["src/styles/base/_print.scss"], "rules": { "color-no-hex": null, "declaration-property-value-disallowed-list": null } }
+  ]
+}

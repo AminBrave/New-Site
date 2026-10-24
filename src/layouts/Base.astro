@@ -1,6 +1,10 @@
 ---
 import '../styles/main.scss';
 import type { Lang } from '../data/types';
+import { buildThemeAssets } from '../theme/css';
+import { activePresetName, presets, theme } from '../theme';
+import { assertThemes } from '../theme/validate';
+import { site } from '../config/site.config';
 
 interface Props {
   lang: Lang;
@@ -9,26 +13,30 @@ interface Props {
   urls: Record<Lang, string>;
   name: string;
   jobTitle: string;
-  /** Font files to preload (first paint). */
-  preload?: string[];
 }
 
-const { lang, title, description, urls, name, jobTitle, preload = [] } = Astro.props;
+const { lang, title, description, urls, name, jobTitle } = Astro.props;
+const dev = import.meta.env.DEV;
+// Loaded only in dev so the panel's code and styles never reach a production build.
+const ThemeLab = dev ? (await import('../components/ThemeLab.astro')).default : null;
+// Production validates the active theme (and fails the build); dev validates all presets and only warns.
+assertThemes(dev ? Object.values(presets) : [theme], !dev);
+const assets = buildThemeAssets(theme, lang, dev ? Object.values(presets).filter((p) => p !== theme) : []);
 const dir = lang === 'fa' ? 'rtl' : 'ltr';
 const abs = (path: string): string | null => (Astro.site ? new URL(path, Astro.site).href : null);
 const canonical = abs(urls[lang]);
 const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle, inLanguage: lang, ...(canonical ? { url: canonical } : {}) };
 ---
 <!doctype html>
-<html lang={lang} dir={dir}>
+<html lang={lang} dir={dir} data-hero={site.variants.hero} data-work={site.variants.work}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#f4f6f8" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f161c" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content={assets.themeColor.light} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={assets.themeColor.dark} media="(prefers-color-scheme: dark)" />
     {canonical && <link rel="canonical" href={canonical} />}
     {canonical && <link rel="alternate" hreflang="en" href={abs(urls.en)} />}
     {canonical && <link rel="alternate" hreflang="fa" href={abs(urls.fa)} />}
@@ -38,8 +46,10 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
     <meta property="og:description" content={description} />
     <meta property="og:locale" content={lang === 'fa' ? 'fa_IR' : 'en_US'} />
     <meta name="twitter:card" content="summary" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232447f5'/%3E%3Cpath d='M9 22V10h7a4 4 0 010 8h-7' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E" />
-    {preload.map((href) => <link rel="preload" as="font" type="font/woff2" href={href} crossorigin="anonymous" />)}
+    <link rel="icon" href={assets.favicon} />
+    {assets.preload.map((href) => <link rel="preload" as="font" type="font/woff2" href={href} crossorigin="anonymous" />)}
+    <style is:inline set:html={assets.css} />
+    {dev && <script is:inline>{`try{var d=document.documentElement,k=['preset','hero','work'];k.forEach(function(n){var v=localStorage.getItem('lab-'+n);if(v)d.setAttribute('data-'+n,v)})}catch(e){}`}</script>}
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     <script is:inline>
       /* Runs before first paint. ES5 on purpose: it must work in every browser. */
@@ -71,5 +81,6 @@ const ld = { '@context': 'https://schema.org', '@type': 'Person', name, jobTitle
   </head>
   <body>
     <slot />
+    {ThemeLab && <ThemeLab presets={Object.values(presets).map((p) => ({ name: p.name, label: p.label }))} active={activePresetName} />}
   </body>
 </html>
