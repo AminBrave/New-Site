@@ -10,7 +10,9 @@
     "check": "astro check",
     "lint:css": "stylelint \"src/**/*.scss\"",
     "check:theme": "tsx scripts/check-theme.ts",
-    "verify": "npm run lint:css && npm run check:theme && astro check && astro build"
+    "presets:sync": "tsx scripts/sync-presets.ts",
+    "test": "tsx --test \"scripts/*.test.ts\"",
+    "verify": "npm run lint:css && npm run check:theme && npm test && astro check && astro build"
   },
   "dependencies": {
     "astro": "^7.4.0"
