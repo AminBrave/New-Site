@@ -1,4 +1,4 @@
-Put project images here, then reference them in src/data/content.js (workShared):
+Put project images here, then reference them in src/data/content.ts (workShared):
   logo:    images/projects/acme-logo.svg   (square, ~256px, transparent or white background)
   cover:   images/projects/acme-cover.jpg  (16:9, ~1600px wide)
   gallery: ['images/projects/acme-1.jpg', ...]
