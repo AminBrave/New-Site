@@ -13,8 +13,10 @@ Bilingual (English `/` and Persian `/fa/`) static portfolio built with [Astro](h
 npm ci
 npm run dev       # http://localhost:4321
 npm run check     # Astro and TypeScript diagnostics
+npm test          # unit tests for the Theme lab logic
 npm run build     # production build and portfolio content relationship validation
 npm run preview   # preview the production build locally
+npm run verify    # lint, theme check, tests, type check and build in one go
 ```
 
 The content validator runs when Astro imports `src/data/content.ts` during the production build. It checks duplicate project IDs, English/Persian project parity, missing or orphaned `workShared` records, duplicate discipline IDs, and invalid related-project references. Placeholder copy is intentionally allowed so incomplete personal content does not block structural development.
@@ -65,9 +67,9 @@ Adaptive effects (`data-perf` on `<html>`) use browser capability signals and a 
 
 ## Styles and theming
 
-Look and structure are configured in three places; see `docs/THEMING.md`.
+Look and structure are configured in three places; see [docs/THEMING.md](docs/THEMING.md).
 
-- `src/theme/`: the identity (colors, fonts, type scale, radius, shadows, motion, layout). Switch preset in `src/theme/index.ts`; preview with the dev-only Theme lab.
+- `src/theme/`: the identity (colors, fonts, type scale, radius, shadows, motion, layout). Switch the default preset with `DEFAULT_PRESET` in `src/theme/index.ts`, or build with `PORTFOLIO_THEME=sand npm run build`. Tune and save presets live with the dev-only Theme lab (below).
 - `src/config/site.config.ts`: section order and visibility, layout variants, optional features.
 - `src/data/`: all text.
 
@@ -80,4 +82,19 @@ SCSS lives in `src/styles` (`main.scss` is the entry; partials are listed in cas
 - `sections/` hero, skills, process, work, resume, contact
 - `variants/` hero and work layout variants
 
-Rules are written as a tree with `&`. They only read theme custom properties (`var(--accent)`, `var(--radius-md)`, `var(--fs-sm)`, `var(--dur-base)`); `npm run lint:css` rejects raw values. `npm run verify` runs lint, theme check, type check and build.
+Rules are written as a tree with `&`. They only read theme custom properties (`var(--accent)`, `var(--radius-md)`, `var(--fs-sm)`, `var(--dur-base)`); `npm run lint:css` rejects raw values.
+
+### Theme lab (development only)
+
+`npm run dev` shows a **Theme lab** button in the bottom corner. Open it to change the theme while you look at the real page:
+
+- **Colors, Type, Shape, Motion, Layout** tabs with sliders, exact number fields, color pickers (plus OKLCH tuning) and validated CSS fields.
+- Every color shows a live WCAG contrast result; **Fix** nudges its lightness until the checks pass.
+- **Undo / Redo**, hold **Compare** to see the saved preset, **Reset**, and drafts that survive a reload.
+- **Save as preset** writes `src/theme/presets/<name>.ts`. The built-in `ink` and `sand` presets are never overwritten: edit one and the panel saves a new preset. A preset must pass the contrast checks to be saved.
+
+Saving works only from the machine running the dev server (the endpoint refuses other devices on your network); use **Copy code** otherwise. The panel and its endpoint are not part of `npm run build`. To add a preset by hand, put a file in `src/theme/presets/` and run `npm run presets:sync`. Details are in [docs/THEMING.md](docs/THEMING.md).
+
+## Versioning and changelog
+
+The site uses [Semantic Versioning](https://semver.org). Every release is described in [CHANGELOG.md](CHANGELOG.md); how to pick a version, write commit messages and cut a release is in [docs/VERSIONING.md](docs/VERSIONING.md).
